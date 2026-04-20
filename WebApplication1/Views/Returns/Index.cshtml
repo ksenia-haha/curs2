@@ -1,0 +1,59 @@
+﻿@using static Domain.Entities.Return
+@model IEnumerable<Domain.Entities.Return>
+@{
+    ViewData["Title"] = "Просмотр возвратов";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Клиент</th>
+            <th>Сотрудник</th>
+            <th>Экземпляр</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.ClientId</td>
+                <td>@item.EmployeeId</td>
+                <td>@item.ExemplarId</td>
+                <td>
+                @if (item.Status == ReturnStatus.InProcess)
+                {
+                    <span>В обработке</span>
+                }
+                else if (item.Status == ReturnStatus.Yes)
+                {
+                    <span>Принято</span>
+                }
+                else if (item.Status == ReturnStatus.No)
+                {
+                    <span>Отказано</span>
+                }
+            </td>
+                @* <td>@item.Status</td> *@
+                <td>
+                    @* <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | *@
+                    @if(isAdmin){
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать |</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">Удалить</a>
+                    }
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button style="width: 170px; margin-left: 10%; margin-top: 20px;">
+    <a asp-controller="Returns" asp-action="Create">Добавить возврат</a>
+</button>

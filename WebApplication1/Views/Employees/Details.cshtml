@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Domain.Employee>
+@{
+    ViewData["Title"] = "Информация о сотруднике";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+
+    var employee = ViewBag.Employee as Domain.Employee;
+    var sales = ViewBag.Sales as IEnumerable<Domain.Sale>;
+    var totalSum = ViewBag.TotalSum;
+    var salesCount = ViewBag.SalesCount;
+    var message = ViewBag.Message;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>@employee?.Name @employee?.Surname</h3>
+
+<p><strong>ID:</strong> @employee?.Id</p>
+<p><strong>Отчество:</strong> @employee?.Patronymic</p>
+<p><strong>Должность:</strong> @employee?.Position</p>
+
+
+<h2>Продажи</h2>
+
+@if (sales != null && sales.Any())
+{
+    <p><strong>Всего продаж:</strong> @salesCount</p>
+    <p><strong>Общая сумма:</strong> @totalSum руб.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Клиент</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in sales)
+            {
+                <tr>
+                    <td>@sale.Date</td>
+                    <td>@sale.Sum руб.</td>
+                    <td>@sale.Client?.Name @sale.Client?.Surname</td>
+                    <td>
+                        <a asp-controller="Sales" asp-action="Edit" asp-route-id="@sale.Id">Редактировать</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-controller="Sales" asp-action="Delete" asp-route-id="@sale.Id">Удалить</a>
+                        }
+                    </td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Продажи не найдены</p>
+}
+
+

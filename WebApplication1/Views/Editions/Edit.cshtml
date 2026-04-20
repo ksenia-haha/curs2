@@ -1,0 +1,60 @@
+﻿@model Edition
+@{
+    ViewData["Title"] = "Редактировать издание";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Editions" asp-action="Edit">
+    <div class="form-input">
+        <label asp-for="ISBN"></label>
+        <input asp-for="ISBN" />
+        <span asp-validation-for="ISBN"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Author"></label>
+        <input asp-for="Author" />
+        <span asp-validation-for="Author"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Genre"></label>
+        <input asp-for="Genre" />
+        <span asp-validation-for="Genre"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Publisher"></label>
+        <input asp-for="Publisher" />
+        <span asp-validation-for="Publisher"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" />
+        <span asp-validation-for="Year"></span>
+    </div>
+
+    @* <div class="form-input">
+        <label asp-for="CountShop"></label>
+        <input asp-for="CountShop" />
+        <span asp-validation-for="CountShop"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="CountSklad"></label>
+        <input asp-for="CountSklad" />
+        <span asp-validation-for="CountSklad"></span>
+    </div> *@
+
+    <input type="submit" value="Обновить" />
+
+</form>
+

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Domain.Sale>
+@{
+    ViewData["Title"] = "Просмотр продаж";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+}
+
+
+<h1>Продажи</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Клиент</th>
+            <th>Сотрудник</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Client?.Name</td>  <!-- Проверка на null -->
+                <td>@item.Employee?.Name</td>
+                <td>@item.Date</td>
+                <td>@item.Sum</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать</a> |
+                    @* <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | *@
+                    @if (isAdmin)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">Удалить</a>
+                    }
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<button style="width: 200px; margin-left: 10%; margin-top: 20px;">
+    <a asp-controller="Sales" asp-action="Create">Добавить продажу</a>
+</button>

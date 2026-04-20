@@ -1,0 +1,48 @@
+﻿@using static Domain.Exemplar
+@model Exemplar
+@{
+    ViewData["Title"] = "Редактировать экземпляр";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Exemplars" asp-action="Edit">
+    <div class="form-input">
+        <label asp-for="Id"></label>
+        <input asp-for="Id" />
+        <span asp-validation-for="Id"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="EditionISBN"></label>
+        @* <input asp-for="EditionISBN" /> *@
+        <select asp-for="EditionISBN" asp-items="ViewBag.EditionList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="EditionISBN"></span>
+    </div>
+
+
+    <div class="form-input">
+        <label asp-for="Section"></label>
+        <input asp-for="Section" />
+        <span asp-validation-for="Section"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Shelf"></label>
+        <input asp-for="Shelf" />
+        <span asp-validation-for="Shelf"></span>
+    </div>
+
+    <div>
+    <label asp-for="Status">Статус</label> <br />
+    <select asp-for="Status" asp-items="Html.GetEnumSelectList<ExemplarStatus>()">
+    </select>
+    </div>
+
+
+    <input type="submit" value="Обновить" />
+
+</form>

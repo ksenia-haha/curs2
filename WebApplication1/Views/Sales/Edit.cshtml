@@ -1,0 +1,48 @@
+﻿@model Sale
+@{
+    ViewData["Title"] = "Редактировать продажу";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Sales" asp-action="Edit">
+    <div class="form-input">
+        <label asp-for="Id"></label>
+        <input asp-for="Id" />
+        <span asp-validation-for="Id"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="ClientId"></label>
+        @* <input asp-for="ClientId" /> *@
+        <select asp-for="ClientId" asp-items="ViewBag.ClientList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="ClientId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="EmployeeId"></label>
+        @* <input asp-for="EmployeeId" /> *@
+        <select asp-for="EmployeeId" asp-items="ViewBag.EmployeeList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="EmployeeId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" />
+        <span asp-validation-for="Date"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Sum"></label>
+        <input asp-for="Sum" />
+        <span asp-validation-for="Sum"></span>
+    </div>
+
+    <input type="submit" value="Обновить" />
+
+</form> 

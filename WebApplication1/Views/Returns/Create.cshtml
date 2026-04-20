@@ -1,0 +1,56 @@
+﻿@model Return
+@{
+    ViewData["Title"] = "Добавление возврата";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+
+<form method="post" asp-controller="Returns" asp-action="Create">
+
+
+    <div class="form-input">
+        <label asp-for="EmployeeId"></label>
+        @* <input asp-for="EmployeeId" /> *@
+        <select asp-for="EmployeeId" asp-items="ViewBag.EmployeeList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="EmployeeId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="ClientId"></label>
+        @* <input asp-for="ClientId" /> *@
+        <select asp-for="ClientId" asp-items="ViewBag.ClientList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="ClientId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="ExemplarId"></label>
+        @* <input asp-for="ExemplarId" /> *@
+        <select asp-for="ExemplarId" asp-items="ViewBag.ExemplarList">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="ExemplarId"></span>
+    </div>
+
+    @* <div class="form-input">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" asp-items="ViewBag.Status">
+            <option value=""></option>
+        </select>
+        <span asp-validation-for="Status"></span>
+    </div> *@
+
+    @* <div class="form-input">
+        <label asp-for="SaleId"></label>
+        <input asp-for="SaleId" />
+        <span asp-validation-for="SaleId"></span>
+    </div> *@
+
+    <input type="submit" value="Отправить" />
+
+</form>

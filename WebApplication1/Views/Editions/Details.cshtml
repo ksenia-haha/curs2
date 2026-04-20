@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Domain.Employee>
+@{
+    ViewData["Title"] = "Информация об издании";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+
+    var edition = ViewBag.Edition as Domain.Edition;
+    var exemplars = ViewBag.Exemplars as IEnumerable<Domain.Exemplar>;
+    var exemplarsCount = ViewBag.ExemplarsCount;
+    var message = ViewBag.Message;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>@edition?.Name @edition?.ISBN</h3>
+
+<p><strong>ISBN:</strong> @edition?.ISBN</p>
+<p><strong>Название:</strong> @edition?.Name</p>
+<p><strong>Автор:</strong> @edition?.Author</p>
+<p><strong>Жанр:</strong> @edition?.Genre</p>
+<p><strong>Издательство:</strong> @edition?.Publisher</p>
+<p><strong>Год выпуска:</strong> @edition?.Year</p>
+
+
+<h2>Экземпляры</h2>
+
+@if (exemplars != null && exemplars.Any())
+{
+    <p><strong>Всего экземпляров:</strong> @exemplarsCount</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Секция</th>
+                <th>Стеллаж</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var exemplar in exemplars)
+            {
+                <tr>
+                    <td>@exemplar.Id</td>
+                    <td>@exemplar.Section</td>
+                    <td>@exemplar.Shelf</td>
+                    <td>
+                        <a asp-controller="Exemplars" asp-action="Edit" asp-route-id="@exemplar.Id">Редактировать</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-controller="Exemplars" asp-action="Delete" asp-route-id="@exemplar.Id">Удалить</a>
+                        }
+                    </td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Продажи не найдены</p>
+}
+
+
+
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                    @if(isAdmin){
+                        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    }
+                     *@
+

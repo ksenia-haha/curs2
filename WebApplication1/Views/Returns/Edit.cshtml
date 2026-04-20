@@ -1,0 +1,47 @@
+﻿@using static Domain.Entities.Return
+@model Return
+@{
+    ViewData["Title"] = "Редактирование возврата";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+
+<form method="post" asp-controller="Returns" asp-action="Edit">
+
+
+    <div class="form-input">
+        <label asp-for="EmployeeId"></label>
+        <input asp-for="EmployeeId" />
+        <span asp-validation-for="EmployeeId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="ClientId"></label>
+        <input asp-for="ClientId" />
+        <span asp-validation-for="ClientId"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="ExemplarId"></label>
+        <input asp-for="ExemplarId" />
+        <span asp-validation-for="ExemplarId"></span>
+    </div>
+
+    <div>
+    <label asp-for="Status">Статус</label> <br />
+    <select asp-for="Status" asp-items="Html.GetEnumSelectList<ReturnStatus>()">
+    </select>
+    </div>
+
+    @* <div class="form-input">
+        <label asp-for="SaleId"></label>
+        <input asp-for="SaleId" />
+        <span asp-validation-for="SaleId"></span>
+    </div> *@
+
+    <input type="submit" value="Отправить" />
+
+</form>

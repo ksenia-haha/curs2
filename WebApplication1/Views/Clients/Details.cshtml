@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Domain.Client>
+@{
+    ViewData["Title"] = "Информация о клиенте";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+
+    var client = ViewBag.Client as Domain.Client;
+    var sales = ViewBag.Sales as IEnumerable<Domain.Sale>;
+    var totalSum = ViewBag.TotalSum;
+    var salesCount = ViewBag.SalesCount;
+    var message = ViewBag.Message;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>@client?.Name @client?.Surname</h3>
+
+<p><strong>ID:</strong> @client?.Id</p>
+<p><strong>Отчество:</strong> @client?.Patronymic</p>
+<p><strong>Адрес:</strong> @client?.Address</p>
+<p><strong>Телефон:</strong> @client?.PhoneNumber</p>
+
+
+<h2>История покупок</h2>
+
+@if (sales != null && sales.Any())
+{
+    <p><strong>Всего покупок:</strong> @salesCount</p>
+    <p><strong>Общая сумма:</strong> @totalSum руб.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Сотрудник</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in sales)
+            {
+                <tr>
+                    <td>@sale.Date</td>
+                    <td>@sale.Sum руб.</td>
+                    <td>@sale.Employee?.Name @sale.Employee?.Surname</td>
+                    <td>
+                        <a asp-controller="Sales" asp-action="Edit" asp-route-id="@sale.Id">Редактировать</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-controller="Sales" asp-action="Delete" asp-route-id="@sale.Id">Удалить</a>
+                        }
+                    </td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Покупки не найдены</p>
+}
+
+
+
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                    @if(isAdmin){
+                        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    }
+                     *@
+

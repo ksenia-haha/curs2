@@ -1,0 +1,149 @@
+html {
+  font-size: 14px;
+  font-family: Roboto;
+}
+
+nav {
+    display: flex;
+    justify-content:space-around;
+}
+
+body {
+    margin-left: 5%;
+    background-color: antiquewhite;
+    color: saddlebrown;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+h1 {
+    color: #6F4A2F;
+    font-size: 30px;
+    text-align: center;
+}
+
+p {
+    color: black;
+    font-size: 20px;
+}
+
+input {
+    border: solid #8B5E3C;
+    border-radius: 20px;
+    border-width: 2px;
+    width: 500px;
+    height: 30px;
+    margin-bottom: 15px;
+}
+
+select {
+    border: solid #8B5E3C;
+    border-radius: 20px;
+    border-width: 2px;
+    width: 500px;
+    height: 30px;
+    margin-bottom: 15px;
+}
+
+input:hover {
+    border-color: #6F4A2F;
+}
+
+button {
+    border: solid #8B5E3C;
+    border-radius: 20px;
+    border-width: 2px;
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+    margin-bottom: 15px;
+    color: #6F4A2F;
+    text-decoration: none;
+    background-color: antiquewhite;
+}
+
+a {
+    color: #6F4A2F;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+nav a:hover {
+    font-size: 18px;
+}
+
+button a {
+    color: #6F4A2F;
+    text-decoration: none;
+}
+
+button:hover {
+    border-color: #6F4A2F;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+    width: 75%;
+    margin-left: 10%;
+}
+
+th {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #F8E3D3;
+    border: solid #6F4A2F;
+    border-width: 2px;
+    padding: 0 6px;
+}
+
+td {
+    font-size: 18px;
+    background-color: #FFFDF9;
+    border: solid #6F4A2F;
+    border-width: 2px;
+}
+
+tr:hover {
+    background-color: #FFFAF3;
+}
+
+.form-input {
+
+}
+
+.form-input label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.edit-btn {
+    color: #6F4A2F;
+    text-decoration: none;
+    margin: 2px;
+}
+
+.edit-btn:hover {
+    color: #65310C;
+}
+
+.delete-btn {
+    color: #E64C61;
+    text-decoration: none;
+    margin: 4px;
+}
+
+.delete-btn:hover {
+    color: #CC2037;
+}
+
+.main-btn {
+    width: 250px;
+    margin-left: 42%;
+    margin-top: 20px;
+    display: block;
+}

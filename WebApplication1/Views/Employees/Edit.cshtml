@@ -1,0 +1,60 @@
+﻿@model Employee
+@{
+    ViewData["Title"] = "Редактировать работника";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Employees" asp-action="Edit">
+    <div class="form-input">
+        <label asp-for="Id"></label>
+        <input asp-for="Id" />
+        <span asp-validation-for="Id"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Surname"></label>
+        <input asp-for="Surname" />
+        <span asp-validation-for="Surname"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Patronymic"></label>
+        <input asp-for="Patronymic" />
+        <span asp-validation-for="Patronymic"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Position"></label>
+        <input asp-for="Position" />
+        <span asp-validation-for="Position"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Login"></label>
+        <input asp-for="Login" />
+        <span asp-validation-for="Login"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div class="form-input">
+        <label asp-for="Level"></label>
+        <input asp-for="Level" />
+        <span asp-validation-for="Level"></span>
+    </div>
+
+    <input type="submit" value="Обновить" />
+
+</form>
