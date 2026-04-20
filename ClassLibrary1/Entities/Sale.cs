@@ -18,7 +18,7 @@ namespace Domain
         public int? Sum { get; set; }
 
         public List<Return> Returns { get; set; }
-        public List<SaleAndExemplar> saleAndExemplars { get; set; }
+        public List<SaleAndExemplar> salesAndExemplars { get; set; }
 
     }
 }

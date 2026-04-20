@@ -106,5 +106,13 @@ namespace Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Exemplar>> GetAvailableExemplarsAsync()
+        {
+            return await _context.Exemplars
+                .Include(e => e.Edition)
+                .Where(e => e.Status == Exemplar.ExemplarStatus.InStock)
+                .ToListAsync();
+        } 
     }
 }

@@ -125,7 +125,7 @@ namespace Infrastructure.Repositories
         public async Task UpdateAsync(Sale item)
         {
             var sale = await _context.Sales.FirstOrDefaultAsync(s => s.Id == item.Id)
-                ?? throw new EditionException("Такой продажи нет в БД");
+                ?? throw new SaleException("Такой продажи нет в БД");
 
             sale.Sum = item.Sum;
             //sale.Id = item.Id;

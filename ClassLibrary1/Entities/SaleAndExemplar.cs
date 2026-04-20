@@ -8,6 +8,7 @@ namespace Domain
 {
     public class SaleAndExemplar
     {
+        public int Id { get; set; }
         public int SaleId { get; set; }
         public int ExemplarId { get; set; }
 

@@ -30,7 +30,7 @@ namespace Domain
             Defective = 3
         }
 
-        public List<SaleAndExemplar> saleAndExemplars;
+        public List<SaleAndExemplar> salesAndExemplars;
         public List<Return> Returns { get; set; }
     }
 }

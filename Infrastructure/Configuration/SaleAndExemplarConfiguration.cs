@@ -14,13 +14,13 @@ namespace Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<SaleAndExemplar> builder)
         {
-            builder.HasKey(x => new { x.SaleId, x.ExemplarId });
+            builder.HasKey(x => x.Id);
 
-            //builder.HasOne(x => x.Exemplar)
-            //    .WithMany(e => e.SaleAndExemplar);
+            builder.HasOne(x => x.Exemplar)
+                .WithMany(e => e.salesAndExemplars);
 
-            //builder.HasOne(x => x.Sale)
-            //    .WithMany(s => s.SaleAndExemplar);
+            builder.HasOne(x => x.Sale)
+                .WithMany(s => s.salesAndExemplars);
         }
     }
 }
