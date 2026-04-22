@@ -15,12 +15,16 @@ namespace WebApplication1.Controllers
         private readonly ISaleRepository _repository;
         private readonly IClientRepository _clientRepository;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly ISaleAndExemplarRepository _saleAndExemplarRepository;
+        private readonly IExemplarRepository _exemplarRepository;
 
-        public SalesController( ISaleRepository repository, IClientRepository clientRepository, IEmployeeRepository employeeRepository)
+        public SalesController( ISaleRepository repository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, ISaleAndExemplarRepository saleAndExemplarRepository, IExemplarRepository exemplarRepository)
         {
             _repository = repository;
             _clientRepository = clientRepository;
             _employeeRepository = employeeRepository;
+            _saleAndExemplarRepository = saleAndExemplarRepository;
+            _exemplarRepository = exemplarRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -47,11 +51,16 @@ namespace WebApplication1.Controllers
                 Text = $"{e.Surname} | {e.Name} | {e.Patronymic}",
             });
 
+            var exemplars = await _exemplarRepository.GetAvailableExemplarsAsync();
+            var exemplarList = exemplars.Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = $"{e.Id} | {e.Edition.Name} | {e.Edition.Author} | {e.Edition.Publisher} | {e.EditionISBN}",
+            });
+
             ViewBag.ClientList = clientList;
             ViewBag.EmployeeList = employeeList;
-
-            //ViewBag.ClientList = new SelectList(clients, "Id", "Name", "Surname");
-            //ViewBag.EmployeeList = new SelectList(employees, "Id", "Name", "Surname");
+            ViewBag.ExemplarList = exemplarList;
 
             return View();
         }
