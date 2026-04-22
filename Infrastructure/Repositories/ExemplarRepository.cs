@@ -8,6 +8,7 @@ using Domain.Exceptions;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using static Domain.Exemplar;
 
 namespace Infrastructure.Repositories
 {
@@ -107,12 +108,24 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        // Эти два новые
+
         public async Task<IEnumerable<Exemplar>> GetAvailableExemplarsAsync()
         {
             return await _context.Exemplars
-                .Include(e => e.Edition)
-                .Where(e => e.Status == Exemplar.ExemplarStatus.InStock)
+                .AsNoTracking()
+                //.Include(e => e.EditionISBN)
+                .Where(e => e.Status == ExemplarStatus.InStock)
                 .ToListAsync();
-        } 
+        }
+
+        public async Task UpdateStatusSoldAsync(int id)
+        {
+            var exemplar = await _context.Exemplars.FirstOrDefaultAsync (e  => e.Id == id);
+            exemplar.Status = ExemplarStatus.Sold;
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
