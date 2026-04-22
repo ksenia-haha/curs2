@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<ISaleRepository, SaleAndExemplarRepository>();
+builder.Services.AddScoped<ISaleAndExemplarRepository, SaleAndExemplarRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IEditionRepository, EditionRepository>();
 builder.Services.AddScoped<IExemplarRepository, ExemplarRepository>();
