@@ -1,0 +1,17 @@
+﻿@model WebApplication1.Models.Log
+
+<h2>Авторизация</h2>
+
+<form asp-action="Login" asp-controller="Log" method="post"> 
+    <div>
+        <label asp-for="Login"></label>
+        <input asp-for="Login" style="margin-left: 10px;" />
+        <span asp-validation-for="Login"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password"  style="margin-left: 2px;"/>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <button type="submit">Войти</button>
+</form>
