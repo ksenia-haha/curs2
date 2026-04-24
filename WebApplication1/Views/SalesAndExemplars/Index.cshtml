@@ -1,0 +1,6 @@
+﻿@model IEnumerable<Domain.SaleAndExemplar>
+@{
+    ViewData["Title"] = "Просмотр продаж";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+}
+
