@@ -41,6 +41,36 @@
         <span asp-validation-for="Sum"></span>
     </div>
 
-    <input type="submit" value="Отправить" />
+    <h4>Товары</h4>
+
+    <table>
+        <thead>
+            <th>Экземпляр</th>
+            <th>Цена</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select name="exemlarId">
+                        <option value=""></option>
+                        @foreach (var ex in ViewBag.ExemplarList)
+                            {
+                                <option value="@ex.Value">@ex.Text</option>
+                            }
+                        </select>
+                </td>
+                <td>
+
+                </td>
+                <td>
+                    <button>Добавить</button>
+                    <button>Удалить</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <input type="submit" value="Оформить продажу" />
 
 </form> 
