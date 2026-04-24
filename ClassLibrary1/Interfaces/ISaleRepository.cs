@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Sale>> GetByClientId(int id);
         Task<IEnumerable<Sale>> GetByEmployeeId(int id);
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }
