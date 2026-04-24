@@ -7,6 +7,7 @@ using SQLitePCL;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using Sale = WebApplication1.Models.Sale;
+using SaleAndExemplar = Domain.SaleAndExemplar;
 
 namespace WebApplication1.Controllers
 {
@@ -62,13 +63,43 @@ namespace WebApplication1.Controllers
             ViewBag.EmployeeList = employeeList;
             ViewBag.ExemplarList = exemplarList;
 
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Sale sale)
         {
+            using var transaction = await _repository.BeginTransactionAsync();
             await _repository.CreateAsync(MapSale(sale));
+
+            int totalSum = 0;
+
+            for (int i = 0; i < exemplarId.Count; i++)
+            {
+                var se = new SaleAndExemplar
+                {
+                    SaleId = sale.Id.Value,
+                    ExemplarId = exemplarId[i],
+                };
+
+                await _saleAndExemplarRepository.CreateAsync(se);
+                totalSum += exemplar.Price;
+            }
+
+            sale.Sum = totalSum;
+            var saleToEdit = new Domain.Sale
+            {
+                Id = sale.Id,
+                ClientId = sale.ClientId,
+                EmployeeId = sale.EmployeeId,
+                Date = sale.Date,
+                Sum = sale.Sum,
+            };
+            await _repository.UpdateAsync(saleToEdit);
+            
+            await _exemplarRepository.UpdateStatusSoldAsyns(exemplarId);
+            await transaction.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -80,6 +111,8 @@ namespace WebApplication1.Controllers
             s.EmployeeId = sale.EmployeeId; 
             s.Date = sale.Date;
             s.Sum = sale.Sum;
+            s.Returns = sale.Returns;
+            s.SaleAndExemplars = sale.SaleAndExemplars;
 
             return s;
         }
