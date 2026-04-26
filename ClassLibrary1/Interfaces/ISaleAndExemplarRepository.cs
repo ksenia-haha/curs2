@@ -8,6 +8,6 @@ namespace Domain.Interfaces
 {
     public interface ISaleAndExemplarRepository : IRepository<SaleAndExemplar>
     {
-
+        Task<IEnumerable<SaleAndExemplar>> GetBySaleIdAsync(int id);
     }
 }

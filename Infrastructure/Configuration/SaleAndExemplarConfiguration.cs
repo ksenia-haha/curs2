@@ -17,10 +17,10 @@ namespace Infrastructure.Configuration
             builder.HasKey(x => x.Id);
 
             builder.HasOne(x => x.Exemplar)
-                .WithMany(e => e.salesAndExemplars);
+                .WithMany(e => e.SaleAndExemplars);
 
             builder.HasOne(x => x.Sale)
-                .WithMany(s => s.salesAndExemplars);
+                .WithMany(s => s.SaleAndExemplars);
         }
     }
 }

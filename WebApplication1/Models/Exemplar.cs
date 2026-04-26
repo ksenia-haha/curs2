@@ -24,6 +24,10 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public string Shelf { get; set; }
 
+        [Display(Name = "Цена")]
+        [Required(ErrorMessage = "Поле должно быть заполнено")]
+        public int Price { get; set; }
+
         public ExemplarStatus Status { get; set; }
 
     }

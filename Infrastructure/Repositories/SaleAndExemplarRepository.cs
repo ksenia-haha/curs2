@@ -88,7 +88,7 @@ namespace Infrastructure.Repositories
             return sales;
         }
 
-        public async Task<IEnumerable<SaleAndExemplar>> GetBySaleId(int id)
+        public async Task<IEnumerable<SaleAndExemplar>> GetBySaleIdAsync(int id)
         {
             var sales = await _context.SalesAndExemplars
                 .AsNoTracking()

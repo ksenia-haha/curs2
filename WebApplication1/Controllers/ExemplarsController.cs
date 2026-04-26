@@ -57,6 +57,7 @@ namespace WebApplication1.Controllers
             e.Section = exemplar.Section;
             e.Shelf = exemplar.Shelf;
             e.Status = exemplar.Status;
+            e.Price = exemplar.Price;
 
             return e;
         }
@@ -80,9 +81,10 @@ namespace WebApplication1.Controllers
                 Section = exemplar.Section,
                 Shelf = exemplar.Shelf,
                 Status = exemplar.Status,
+                Price = exemplar.Price,
             };
 
-            if (exemplar.Id == null || exemplar.Id == 0)
+            if (exemplar.Id == 0)
             {
                 ModelState.AddModelError("", "ID экземпляра не указан");
                 return View(exemplar);
@@ -109,6 +111,7 @@ namespace WebApplication1.Controllers
                 EditionISBN = exemplarDomain.EditionISBN,
                 Section = exemplarDomain.Section,
                 Shelf = exemplarDomain.Shelf,
+                Price = exemplarDomain.Price,
             };
 
             var editions = await _editionRepository.GetAllAsync();

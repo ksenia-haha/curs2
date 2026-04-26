@@ -68,37 +68,39 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Sale sale)
+        public async Task<IActionResult> Create(Sale sale, List<int> selectedExemplarIds)
         {
             using var transaction = await _repository.BeginTransactionAsync();
-            await _repository.CreateAsync(MapSale(sale));
+            var domainSale = MapSale(sale);
+            domainSale.Sum = 0;
+            await _repository.CreateAsync(domainSale);
 
             int totalSum = 0;
 
-            for (int i = 0; i < exemplarId.Count; i++)
+            foreach (var exemplarId in selectedExemplarIds)
             {
-                var se = new SaleAndExemplar
+                var exemplar = await _exemplarRepository.GetByIntIdAsync(exemplarId);
+                if (exemplar != null)
                 {
-                    SaleId = sale.Id.Value,
-                    ExemplarId = exemplarId[i],
-                };
+                    var price = exemplar.Price; 
+                    totalSum += price;
 
-                await _saleAndExemplarRepository.CreateAsync(se);
-                totalSum += exemplar.Price;
+                    var se = new SaleAndExemplar
+                    {
+                        SaleId = domainSale.Id.Value,
+                        ExemplarId = exemplarId,
+                        //Price = price, 
+                    };
+                    await _saleAndExemplarRepository.CreateAsync(se);
+
+                    await _exemplarRepository.UpdateStatusSoldAsynс(exemplarId);
+                }
             }
 
-            sale.Sum = totalSum;
-            var saleToEdit = new Domain.Sale
-            {
-                Id = sale.Id,
-                ClientId = sale.ClientId,
-                EmployeeId = sale.EmployeeId,
-                Date = sale.Date,
-                Sum = sale.Sum,
-            };
-            await _repository.UpdateAsync(saleToEdit);
+            domainSale.Sum = totalSum;
+            await _repository.UpdateAsync(domainSale);
             
-            await _exemplarRepository.UpdateStatusSoldAsyns(exemplarId);
+
             await transaction.CommitAsync();
 
             return RedirectToAction(nameof(Index));
@@ -111,8 +113,6 @@ namespace WebApplication1.Controllers
             s.EmployeeId = sale.EmployeeId; 
             s.Date = sale.Date;
             s.Sum = sale.Sum;
-            s.Returns = sale.Returns;
-            s.SaleAndExemplars = sale.SaleAndExemplars;
 
             return s;
         }
@@ -186,6 +186,22 @@ namespace WebApplication1.Controllers
             ViewBag.EmployeeList = employeeList;
 
             return View(saleWeb);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var sale = await _repository.GetByIntIdAsync(id);
+            
+            var saleAndExemplars = await _saleAndExemplarRepository.GetBySaleIdAsync(id);
+            var exemplars = saleAndExemplars.Select(se => se.Exemplar).ToList();
+
+            ViewBag.Sale = sale;
+            ViewBag.Exemplars = exemplars;
+            ViewBag.ExemplarsCount = exemplars.Count;
+            ViewBag.TotalSum = sale.Sum;
+
+            return View();
         }
 
     }

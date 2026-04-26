@@ -7,6 +7,7 @@ using Domain;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using WebApplication1.Data;
 
 namespace Infrastructure.Repositories
@@ -122,6 +123,20 @@ namespace Infrastructure.Repositories
             return await _context.Sales.AsNoTracking().FirstOrDefaultAsync(s => s.Id == item.Id);
         }
 
+        public async Task<Sale> GetByIntIdAsync(int id)
+        {
+            var sale = await _context.Sales
+                .AsNoTracking()
+                .Include(s => s.Client)
+                .Include(s => s.Employee)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (sale == null)
+                throw new SaleException("Такой продажи нет в БД");
+
+            return (sale);
+        }
+
         public async Task UpdateAsync(Sale item)
         {
             var sale = await _context.Sales.FirstOrDefaultAsync(s => s.Id == item.Id)
@@ -134,6 +149,11 @@ namespace Infrastructure.Repositories
             sale.Employee = item.Employee;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
     }
 }

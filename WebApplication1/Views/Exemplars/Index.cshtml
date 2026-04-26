@@ -13,9 +13,9 @@
         <tr>
             <th>ID</th>
             <th>ISBN</th>
-            @* <th>Издание</th> *@
             <th>Секция</th>
             <th>Стеллаж</th>
+            <th>Цена</th>
             <th>Статус</th>
             <th>Действия</th>
         </tr>
@@ -29,6 +29,7 @@
                 @* <td>@item.Edition</td>  *@
                 <td>@item.Section</td>
                 <td>@item.Shelf</td>
+                <td>@item.Price</td>
                 <td>
                     @if (item.Status == ExemplarStatus.InStock)
                     {

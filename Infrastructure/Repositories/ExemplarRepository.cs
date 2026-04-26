@@ -83,6 +83,13 @@ namespace Infrastructure.Repositories
             return await _context.Exemplars.AsNoTracking().FirstOrDefaultAsync(e => e.Id == item.Id);
         }
 
+        public async Task<Exemplar> GetByIntIdAsync(int id)
+        {
+            var exemplar = await _context.Exemplars.FirstOrDefaultAsync(e => e.Id == id)
+                ?? throw new ExemplarException("Такого экземпляра нет в БД");
+            return await _context.Exemplars.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<IEnumerable<Exemplar>> GetByEditionId(string id)
         {
             var exemplars = await _context.Exemplars
@@ -114,14 +121,14 @@ namespace Infrastructure.Repositories
         {
             return await _context.Exemplars
                 .AsNoTracking()
-                //.Include(e => e.EditionISBN)
+                .Include(e => e.Edition)
                 .Where(e => e.Status == ExemplarStatus.InStock)
                 .ToListAsync();
         }
 
-        public async Task UpdateStatusSoldAsync(int id)
+        public async Task UpdateStatusSoldAsynс(int exemplarId)
         {
-            var exemplar = await _context.Exemplars.FirstOrDefaultAsync (e  => e.Id == id);
+            var exemplar = await _context.Exemplars.FirstOrDefaultAsync (e  => e.Id == exemplarId);
             exemplar.Status = ExemplarStatus.Sold;
 
             await _context.SaveChangesAsync();

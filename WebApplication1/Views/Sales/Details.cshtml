@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Domain.Sale>
+@{
+    ViewData["Title"] = "Информация о продаже";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+
+    var sale = ViewBag.Sale as Domain.Sale;
+    var exemplars = ViewBag.Exemplars as IEnumerable<Domain.Exemplar>;
+    var exemplarsCount = ViewBag.ExemplarsCount;
+    var totalSum = ViewBag.TotalSum;
+
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h1>Детали продажи @sale?.Id</h1>
+
+
+<p><strong>ID продажи:</strong> @sale?.Id</p>
+<p><strong>Дата:</strong> @sale?.Date</p>
+<p><strong>Сумма:</strong> @totalSum руб.</p>
+<p><strong>Клиент:</strong> @sale?.Client?.Surname @sale?.Client?.Name</p>
+<p><strong>Сотрудник:</strong> @sale?.Employee?.Surname @sale?.Employee?.Name</p> 
+
+<h2>Проданные экземпляры</h2>
+
+@if (exemplars != null && exemplars.Any())
+{
+    @* <p><strong>Всего экземпляров в продаже:</strong> @exemplarsCount</p>  *@
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID экземпляра</th>
+                <th>ISBN</th>
+                <th>Название издания</th>
+                <th>Секция</th>
+                <th>Стеллаж</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var exemplar in exemplars)
+            { 
+                if (exemplar == null)
+                {
+                    Console.WriteLine("Экземпляр ноль");
+                }
+                else
+                {
+                    
+                
+                <tr>
+                    <td>@exemplar.Id</td> 
+                    <td>@exemplar.EditionISBN</td> 
+                    <td>@exemplar.Edition?.Name</td>
+                    <td>@exemplar.Section</td> 
+                    <td>@exemplar.Shelf</td> 
+                    <td>
+                        <a asp-controller="Exemplars" asp-action="Edit" asp-route-id="@exemplar.Id">Редактировать</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-controller="Exemplars" asp-action="Delete" asp-route-id="@exemplar.Id">Удалить</a>
+                        } 
+                     </td>
+                 </tr>
+                 }
+            }  
+        </tbody>
+    </table>
+}
+
+else
+{
+    <p>Нет экземпляров в этой продаже</p>
+} 

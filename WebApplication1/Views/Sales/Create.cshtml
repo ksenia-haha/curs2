@@ -35,41 +35,22 @@
         <span asp-validation-for="Date"></span>
     </div>
 
-    <div class="form-input">
+    @* <div class="form-input">
         <label asp-for="Sum"></label>
         <input asp-for="Sum" />
         <span asp-validation-for="Sum"></span>
-    </div>
+    </div> *@
 
     <h4>Товары</h4>
 
-    <table>
-        <thead>
-            <th>Экземпляр</th>
-            <th>Цена</th>
-            <th></th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <select name="exemlarId">
-                        <option value=""></option>
-                        @foreach (var ex in ViewBag.ExemplarList)
-                            {
-                                <option value="@ex.Value">@ex.Text</option>
-                            }
-                        </select>
-                </td>
-                <td>
-
-                </td>
-                <td>
-                    <button>Добавить</button>
-                    <button>Удалить</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="form-group">
+        <select name="selectedExemplarIds" class="multichoose" multiple size="8">
+            @foreach (var ex in ViewBag.ExemplarList)
+            {
+                <option value="@ex.Value">@ex.Text</option>
+            }
+        </select>
+    </div>
 
     <input type="submit" value="Оформить продажу" />
 

@@ -11,5 +11,7 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Exemplar>> GetAvailableExemplarsAsync();
         Task<IEnumerable<Exemplar>> GetByEditionId(string id);
+        Task<Exemplar> GetByIntIdAsync(int exemplarId);
+        Task UpdateStatusSoldAsynс(int exemplarId);
     }
 }

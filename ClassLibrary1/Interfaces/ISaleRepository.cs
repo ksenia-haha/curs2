@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task<IEnumerable<Sale>> GetByClientId(int id);
         Task<IEnumerable<Sale>> GetByEmployeeId(int id);
         Task<IDbContextTransaction> BeginTransactionAsync();
+        Task<Sale> GetByIntIdAsync(int id);
     }
 }
