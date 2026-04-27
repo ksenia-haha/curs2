@@ -9,7 +9,6 @@ namespace Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasAlternateKey(x => x.Name);
 
             builder.HasMany(e => e.Sales)
                 .WithOne(s => s.Employee);

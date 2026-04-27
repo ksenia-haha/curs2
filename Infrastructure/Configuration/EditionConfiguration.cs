@@ -10,7 +10,7 @@ namespace Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Edition> builder)
         {
             builder.HasKey(x => x.ISBN);
-            //builder.HasAlternateKey(x => x.Name);
+            
 
             builder.HasMany(e => e.Exemplars)
                 .WithOne(e => e.Edition);
