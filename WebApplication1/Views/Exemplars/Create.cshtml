@@ -71,20 +71,36 @@
     function checkPrice()
     {
         let priceInput = document.querySelector('[name="Price"]');
-        let price = priceInput.value.trim();
-        
-        let errorSpan = document.querySelector('[data-valmsg-for="Price"]');
-        
-        if (price === '') {
-            errorSpan.innerHTML = "Введите цену";
-            errorSpan.style.color = "red";
-            priceInput.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            priceInput.style.border = "";
-            return true;
-        }
+    let price = priceInput.value.trim();
+    
+    let errorSpan = document.querySelector('[data-valmsg-for="Price"]');
+
+    if (price === '') {
+        errorSpan.innerHTML = "Введите цену";
+        errorSpan.style.color = "red";
+        priceInput.style.border = "2px solid red";
+        return false;
+    }
+    
+    let onlyDigitsAndDot = /^\d+(,\d{1,2})?$/
+    if (!onlyDigitsAndDot.test(price)) {
+        errorSpan.innerHTML = "Цена может содержать только цифры и запятую";
+        errorSpan.style.color = "red";
+        priceInput.style.border = "2px solid red";
+        return false;
+    }
+    
+    let priceNumber = parseFloat(price);
+    if (priceNumber <= 0) {
+        errorSpan.innerHTML = "Цена должна быть больше нуля";
+        errorSpan.style.color = "red";
+        priceInput.style.border = "2px solid red";
+        return false;
+    }
+    
+    errorSpan.innerHTML = "";
+    priceInput.style.border = "";
+    return true;
     }
 
     function checkSection()

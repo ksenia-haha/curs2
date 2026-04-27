@@ -42,18 +42,6 @@
         <span asp-validation-for="Year"></span>
     </div>
 
-    @* <div class="form-input">
-        <label asp-for="CountShop"></label>
-        <input asp-for="CountShop" />
-        <span asp-validation-for="CountShop"></span>
-    </div>
-
-    <div class="form-input">
-        <label asp-for="CountSklad"></label>
-        <input asp-for="CountSklad" />
-        <span asp-validation-for="CountSklad"></span>
-    </div> *@
-
     <input type="submit" value="Обновить" />
 
 </form>
@@ -68,20 +56,38 @@
         let errorSpan = document.querySelector('[data-valmsg-for="ISBN"]');
         
         if (isbn === '') {
-            errorSpan.innerHTML = "Введите ISBN";
-            errorSpan.style.color = "red";
-            isbnInput.style.border = "2px solid red";
-            return false;
-        } else if (isbn.length < 13) {
-            errorSpan.innerHTML = "ISBN не может быть короче 13 цифр";
-            errorSpan.style.color = "red";
-            isbnInput.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            isbnInput.style.border = "";
-            return true;
+        errorSpan.innerHTML = "Введите ISBN";
+        errorSpan.style.color = "red";
+        isbnInput.style.border = "2px solid red";
+        return false;
         }
+    
+    if (isbn.length < 13) {
+        errorSpan.innerHTML = "ISBN должен содержать минимум 13 символов";
+        errorSpan.style.color = "red";
+        isbnInput.style.border = "2px solid red";
+        return false;
+    }
+    
+    let onlyDigitsAndDashes = /^[0-9-]+$/;
+    if (!onlyDigitsAndDashes.test(isbn)) {
+        errorSpan.innerHTML = "ISBN может содержать только цифры и дефисы";
+        errorSpan.style.color = "red";
+        isbnInput.style.border = "2px solid red";
+        return false;
+    }
+   
+    let hasDigits = /[0-9]/;
+    if (!hasDigits.test(isbn)) {
+        errorSpan.innerHTML = "ISBN должен содержать хотя бы одну цифру";
+        errorSpan.style.color = "red";
+        isbnInput.style.border = "2px solid red";
+        return false;
+    }
+    
+    errorSpan.innerHTML = "";
+    isbnInput.style.border = "";
+    return true;
     }
 
     function checkName()

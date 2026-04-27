@@ -15,7 +15,7 @@ namespace Domain
         public Edition? Edition { get; set; }
         public string Section { get; set; }
         public string Shelf { get; set; }
-        public int Price { get; set; } 
+        public double Price { get; set; } 
         public ExemplarStatus Status { get; set; } = ExemplarStatus.InStock;
 
         public enum ExemplarStatus

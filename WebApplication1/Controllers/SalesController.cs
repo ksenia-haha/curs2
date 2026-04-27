@@ -75,7 +75,7 @@ namespace WebApplication1.Controllers
             domainSale.Sum = 0;
             await _repository.CreateAsync(domainSale);
 
-            int totalSum = 0;
+            double totalSum = 0;
 
             foreach (var exemplarId in selectedExemplarIds)
             {

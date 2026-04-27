@@ -15,7 +15,7 @@ namespace Domain
         public Client Client {  get; set; }
         public Employee Employee { get; set; }
         public string Date { get; set; }
-        public int? Sum { get; set; }
+        public double? Sum { get; set; }
 
         public List<Return> Returns { get; set; }
         public List<SaleAndExemplar> SaleAndExemplars { get; set; }

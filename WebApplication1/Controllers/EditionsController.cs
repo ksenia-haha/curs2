@@ -52,13 +52,6 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        //public async Task<IActionResult> Delete(Edition edition)
-        //{
-        //    var editionToDelete = new Domain.Edition { ISBN = edition.ISBN };
-
-        //    await _repository.DeleteAsync(editionToDelete);
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         public async Task<IActionResult> Delete(Domain.DTO.EditionDTO edition)
         {
@@ -79,8 +72,6 @@ namespace WebApplication1.Controllers
                 Genre = edition.Genre,
                 Publisher = edition.Publisher,
                 Year = edition.Year,
-                //CountShop = edition.CountShop,
-                //CountSklad = edition.CountSklad,
             };
 
             if (edition.Id == null)
@@ -94,10 +85,33 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(string id) 
         {
-            return View();
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var edition = await _repository.GetByIdAsync(new Domain.Edition { ISBN = id });
+
+            if (edition == null)
+            {
+                return NotFound();
+            }
+
+            var editionModel = new WebApplication1.Models.Edition
+            {
+                ISBN = edition.ISBN,
+                Name = edition.Name,
+                Author = edition.Author,
+                Genre = edition.Genre,
+                Publisher = edition.Publisher,
+                Year = edition.Year
+            };
+
+            return View(editionModel);
         }
+
 
         public async Task<IActionResult> Details(Domain.DTO.EditionDTO edition)
         {
@@ -125,5 +139,7 @@ namespace WebApplication1.Controllers
 
             return View();
         }
-    }
+    } 
+
+
 }

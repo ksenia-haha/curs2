@@ -6,7 +6,7 @@ namespace WebApplication1.Models
     {
         [Display(Name = "ID")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Display(Name = "Фамилия")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]

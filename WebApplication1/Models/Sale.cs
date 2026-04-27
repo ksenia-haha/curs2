@@ -24,7 +24,7 @@ namespace WebApplication1.Models
 
         [Display(Name = "Сумма")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
-        public int? Sum { get; set; }
+        public double? Sum { get; set; }
 
         public List<SaleAndExemplar> SaleAndExemplars { get; set; }
         public List<Return> Returns { get; set; }

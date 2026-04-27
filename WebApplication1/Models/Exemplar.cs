@@ -26,7 +26,7 @@ namespace WebApplication1.Models
 
         [Display(Name = "Цена")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
-        public int Price { get; set; }
+        public double Price { get; set; }
 
         public ExemplarStatus Status { get; set; }
 
