@@ -143,10 +143,9 @@ namespace Infrastructure.Repositories
                 ?? throw new SaleException("Такой продажи нет в БД");
 
             sale.Sum = item.Sum;
-            //sale.Id = item.Id;
-            sale.Sum = item.Sum;
-            sale.Client = item.Client;
-            sale.Employee = item.Employee;
+            sale.ClientId = item.ClientId;
+            sale.EmployeeId = item.EmployeeId;
+            sale.Date = item.Date;
 
             await _context.SaveChangesAsync();
         }

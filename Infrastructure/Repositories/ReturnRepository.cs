@@ -51,7 +51,12 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Return>> GetAllAsync()
         {
-            return await _context.Returns.AsNoTracking().ToListAsync();
+            return await _context.Returns
+                .AsNoTracking()
+                .Include(r => r.Client)
+                .Include(r => r.Employee)
+                .Include(r => r.Exemplar)
+                .ToListAsync();
         }
 
         //поиск по чему-то

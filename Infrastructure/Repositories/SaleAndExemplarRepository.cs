@@ -92,7 +92,12 @@ namespace Infrastructure.Repositories
         {
             var sales = await _context.SalesAndExemplars
                 .AsNoTracking()
-                .Include(se => se.Sale)
+                //.Include(se => se.Sale)
+                //.Include(se => se.Exemplar)
+                //.ThenInclude(e => e.Edition)
+                .Include(se => se.Sale)           
+                .Include(se => se.Exemplar)       
+                .ThenInclude(e => e.Edition)
                 .Where(se => se.Sale.Id == id)
                 .ToListAsync();
 

@@ -111,6 +111,7 @@ namespace Infrastructure.Repositories
             exemplar.Shelf = item.Shelf;
             exemplar.Section = item.Section;
             exemplar.Status = item.Status;
+            exemplar.Price = item.Price;
 
             await _context.SaveChangesAsync();
         }
