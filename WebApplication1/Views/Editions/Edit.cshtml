@@ -5,7 +5,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<form method="post" asp-controller="Editions" asp-action="Edit">
+<form method="post" asp-controller="Editions" asp-action="Edit" id="editionForm">
     <div class="form-input">
         <label asp-for="ISBN"></label>
         <input asp-for="ISBN" />
@@ -58,3 +58,155 @@
 
 </form>
 
+
+<script>
+    function checkISBN()
+    {
+        let isbnInput = document.querySelector('[name="ISBN"]');
+        let isbn = isbnInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="ISBN"]');
+        
+        if (isbn === '') {
+            errorSpan.innerHTML = "Введите ISBN";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        } else if (isbn.length < 13) {
+            errorSpan.innerHTML = "ISBN не может быть короче 13 цифр";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            isbnInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkName()
+    {
+        let nameInput = document.querySelector('[name="Name"]');
+        let name = nameInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
+        
+        if (name === '') {
+            errorSpan.innerHTML = "Введите название";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
+        }
+        else {
+            errorSpan.innerHTML = "";
+            nameInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkAuthor()
+    {
+        let authorInput = document.querySelector('[name="Author"]');
+        let author = authorInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Author"]');
+        
+        if (author === '') {
+            errorSpan.innerHTML = "Введите ФИО автора";
+            errorSpan.style.color = "red";
+            authorInput.style.border = "2px solid red";
+            return false;
+        } else if (author.length < 4) {
+            errorSpan.innerHTML = "ФИО автора слишком короткое";
+            errorSpan.style.color = "red";
+            authorInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            authorInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkGenre()
+    {
+        let genreInput = document.querySelector('[name="Genre"]');
+        let genre = genreInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Genre"]');
+        
+        if (genre === '') {
+            errorSpan.innerHTML = "Введите жанр";
+            errorSpan.style.color = "red";
+            genreInput.style.border = "2px solid red";
+            return false;
+        }
+        else {
+            errorSpan.innerHTML = "";
+            genreInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkPublisher()
+    {
+        let publisherInput = document.querySelector('[name="Publisher"]');
+        let publisher = publisherInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Publisher"]');
+        
+        if (publisher === '') {
+            errorSpan.innerHTML = "Введите издательство";
+            errorSpan.style.color = "red";
+            publisherInput.style.border = "2px solid red";
+            return false;
+        }
+        else {
+            errorSpan.innerHTML = "";
+            publisherInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkYear()
+    {
+        let yearInput = document.querySelector('[name="Year"]');
+        let year = yearInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Year"]');
+        
+        if (year === '') {
+            errorSpan.innerHTML = "Введите название";
+            errorSpan.style.color = "red";
+            yearInput.style.border = "2px solid red";
+            return false;
+        }
+        else {
+            errorSpan.innerHTML = "";
+            yearInput.style.border = "";
+            return true;
+        }
+    }
+    
+     let form = document.getElementById('editionForm');
+        form.addEventListener('submit', function(event) {
+        let isISBNOk = checkISBN();
+        let isNameOk = checkName();
+        let isAuthorOk = checkAuthor();
+        let isPublisherOk = checkPublisher();
+        let isYearOk = checkYear();
+        let isGenreOk = checkGenre();
+    
+        if (!isISBNOk || !isNameOk || !isAuthorOk || !isPublisherOk || !isYearOk  || !isGenreOk) {
+            event.preventDefault();
+        }
+    });
+
+     document.querySelector('[name="ISBN"]').addEventListener('input', checkISBN);
+     document.querySelector('[name="Name"]').addEventListener('input', checkName);
+     document.querySelector('[name="Author"]').addEventListener('input', checkAuthor);
+     document.querySelector('[name="Publisher"]').addEventListener('input', checkPublisher);
+     document.querySelector('[name="Year"]').addEventListener('input', checkYear);
+     document.querySelector('[name="Genre"]').addEventListener('input', checkGenre);
+
+</script>

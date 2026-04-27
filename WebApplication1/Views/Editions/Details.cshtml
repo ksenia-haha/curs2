@@ -44,10 +44,10 @@
                     <td>@exemplar.Section</td>
                     <td>@exemplar.Shelf</td>
                     <td>
-                        <a asp-controller="Exemplars" asp-action="Edit" asp-route-id="@exemplar.Id">Редактировать</a>
+                        <a asp-controller="Exemplars" asp-action="Edit" asp-route-id="@exemplar.Id" class="edit-btn">Редактировать</a>
                         @if (isAdmin)
                         {
-                            <a asp-controller="Exemplars" asp-action="Delete" asp-route-id="@exemplar.Id">Удалить</a>
+                            <a asp-controller="Exemplars" asp-action="Delete" asp-route-id="@exemplar.Id" class="delete-btn">Удалить</a>
                         }
                     </td> 
                 </tr>

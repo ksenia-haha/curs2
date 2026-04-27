@@ -23,8 +23,8 @@
         {
             <tr>
                 <td>@item.Id</td>
-                <td>@item.Client?.Name</td>  <!-- Проверка на null -->
-                <td>@item.Employee?.Name</td>
+                <td>@item.Client?.Name @item.Client?.Surname</td> 
+                <td>@item.Employee?.Name @item.Employee?.Surname</td>
                 <td>@item.Date</td>
                 <td>@item.Sum</td>
                 <td>

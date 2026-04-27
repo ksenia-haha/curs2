@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Главная";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
 }
 
 
@@ -26,6 +27,10 @@
     <a asp-controller="Returns" asp-action="Index">Возвраты</a>
 </button>
 
-<button class="main-btn">
-    <a asp-controller="Employees" asp-action="Index">Сотрудники</a>
-</button>
+@if (isAdmin)
+{
+    <button class="main-btn">
+        <a asp-controller="Employees" asp-action="Index">Сотрудники</a>
+    </button>
+}
+

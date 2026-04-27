@@ -7,7 +7,7 @@
 <h1>Редактировать клиента</h1>
 
 
-<form method="post" asp-controller="Clients" asp-action="Edit">
+<form method="post" asp-controller="Clients" asp-action="Edit" id="clientForm">
     <input type="hidden" asp-for="Id" />
 
 
@@ -44,3 +44,111 @@
     <input type="submit" value="Обновить" />
 
 </form>
+
+<script>
+    function checkSurname()
+    {
+        let surnameInput = document.querySelector('[name="Surname"]');
+        let surname = surnameInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Surname"]');
+        
+        if (surname === '') {
+            errorSpan.innerHTML = "Введите фамилию";
+            errorSpan.style.color = "red";
+            surnameInput.style.border = "2px solid red";
+            return false;
+        } else if (surname.length < 2) {
+            errorSpan.innerHTML = "Фамилия слишком короткая";
+            errorSpan.style.color = "red";
+            surnameInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            surnameInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkName()
+    {
+        let nameInput = document.querySelector('[name="Name"]');
+        let name = nameInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
+        
+        if (name === '') {
+            errorSpan.innerHTML = "Введите имя";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
+        } else if (name.length < 2) {
+            errorSpan.innerHTML = "Имя слишком короткое";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            nameInput.style.border = "";
+            return true;
+        }
+    }
+
+     function checkAddress() {
+        let input = document.querySelector('[name="Address"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Address"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Введите адрес";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+    function checkPhone() {
+        let input = document.querySelector('[name="PhoneNumber"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="PhoneNumber"]');
+        let digits = value.replace(/\D/g, '');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Введите номер телефона";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else if (digits.length < 11 || digits.length > 12) {
+            errorSpan.innerHTML = "Номер должен содержать 11 цифр (например: 89123456789)";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+     let form = document.getElementById('clientForm');
+        form.addEventListener('submit', function(event) {
+        let isSurnameOk = checkSurname();
+        let isNameOk = checkName();
+        let isAddressOk = checkAddress();
+        let isPhoneOk = checkPhone();
+    
+        if (!isSurnameOk || !isNameOk || !isAddressOk || !isPhoneOk) {
+            event.preventDefault();
+        }
+    });
+
+     document.querySelector('[name="Surname"]').addEventListener('input', checkSurname);
+     document.querySelector('[name="Name"]').addEventListener('input', checkName);
+     document.querySelector('[name="Address"]').addEventListener('input', checkAddress);
+     document.querySelector('[name="PhoneNumber"]').addEventListener('input', checkPhone);
+
+</script>

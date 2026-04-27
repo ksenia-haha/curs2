@@ -44,10 +44,10 @@
                     <td>@sale.Sum руб.</td>
                     <td>@sale.Employee?.Name @sale.Employee?.Surname</td>
                     <td>
-                        <a asp-controller="Sales" asp-action="Edit" asp-route-id="@sale.Id">Редактировать</a>
+                        <a asp-controller="Sales" asp-action="Edit" asp-route-id="@sale.Id" class="edit-btn">Редактировать</a>
                         @if (isAdmin)
                         {
-                            <a asp-controller="Sales" asp-action="Delete" asp-route-id="@sale.Id">Удалить</a>
+                            <a asp-controller="Sales" asp-action="Delete" asp-route-id="@sale.Id" class="delete-btn">Удалить</a>
                         }
                     </td> 
                 </tr>

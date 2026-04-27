@@ -1,17 +1,34 @@
 ﻿@model Sale
 @{
-    ViewData["Title"] = "Просмотр продаж";
+    ViewData["Title"] = "Добавление продажи";
+    var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
 }
 
 
 <h1>Добавление продажи</h1>
 
-<form method="post" asp-controller="Sales" asp-action="Create">
-    <div class="form-input">
+<form method="post" asp-controller="Sales" asp-action="Create" id="saleForm">
+    @* <div class="form-input">
         <label asp-for="Id"></label>
         <input asp-for="Id" />
         <span asp-validation-for="Id"></span>
-    </div>
+    </div> *@
+
+    @if (isAdmin)
+    {
+        <div class="form-input">
+            <label asp-for="EmployeeId"></label>
+            <select asp-for="EmployeeId" asp-items="ViewBag.EmployeeList">
+                <option value=""></option>
+            </select>
+            <span asp-validation-for="EmployeeId"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" name="EmployeeId" value="@Context.Session.GetInt32("UserId")" />
+        <p>Продажу оформляет: @Context.Session.GetString("UserSurname") @Context.Session.GetString("UserName") </p>
+    }
 
     <div class="form-input">
         <label asp-for="ClientId"></label>
@@ -22,24 +39,11 @@
     </div>
 
     <div class="form-input">
-        <label asp-for="EmployeeId"></label>
-        <select asp-for="EmployeeId" asp-items="ViewBag.EmployeeList">
-            <option value=""></option>
-        </select>
-        <span asp-validation-for="EmployeeId"></span>
-    </div>
-
-    <div class="form-input">
         <label asp-for="Date"></label>
         <input asp-for="Date" />
         <span asp-validation-for="Date"></span>
     </div>
 
-    @* <div class="form-input">
-        <label asp-for="Sum"></label>
-        <input asp-for="Sum" />
-        <span asp-validation-for="Sum"></span>
-    </div> *@
 
     <h4>Товары</h4>
 
@@ -55,3 +59,88 @@
     <input type="submit" value="Оформить продажу" />
 
 </form> 
+
+<script>
+     function checkClient() {
+        let input = document.querySelector('[name="ClientId"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="ClientId"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите клиента";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+    function checkEmployee() {
+        let input = document.querySelector('[name="EmployeeId"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="EmployeeId"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите сотрудника";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+    function checkDate() {
+        let input = document.querySelector('[name="Date"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Date"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Заполните дату";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+    // function checkExemplars() {
+    //    function checkExemplars() {
+    //     let select = document.querySelector('[name="selectedExemplarIds"]');
+    //     let selectedOptions = select.selectedOptions;
+    
+    //     if (selectedOptions.length === 0) {
+    //         errorSpan.innerHTML = "Выберите экземпляры";
+    //         errorSpan.style.color = "red";
+    //         input.style.border = "2px solid red";
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
+    
+     let form = document.getElementById('saleForm');
+        form.addEventListener('submit', function(event) {
+        let isClientIdOk = checkClient();
+        let isEmployeeIdOk = checkEmployee();
+        // let isExemplarsOk = checkExemplars();
+        let isDateOk = checkDate();
+    
+        if (!isClientIdOk || !isEmployeeIdOk || !isDateOk) {
+            event.preventDefault();
+        }
+    });
+
+     document.querySelector('[name="ClientId"]').addEventListener('input', checkClient);
+     document.querySelector('[name="EmployeeId"]').addEventListener('input', checkEmployee);
+     document.querySelector('[name="Date"]').addEventListener('input', checkDate);
+
+</script>

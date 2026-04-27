@@ -7,12 +7,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<form method="post" asp-controller="Exemplars" asp-action="Edit">
-    <div class="form-input">
-        <label asp-for="Id"></label>
-        <input asp-for="Id" />
-        <span asp-validation-for="Id"></span>
-    </div>
+<form method="post" asp-controller="Exemplars" asp-action="Edit" id="exemplarForm">
+    <input type="hidden" asp-for="Id" />
 
     <div class="form-input">
         <label asp-for="EditionISBN"></label>
@@ -23,6 +19,11 @@
         <span asp-validation-for="EditionISBN"></span>
     </div>
 
+    <div class="form-input">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" />
+        <span asp-validation-for="Price"></span>
+    </div>
 
     <div class="form-input">
         <label asp-for="Section"></label>
@@ -46,3 +47,99 @@
     <input type="submit" value="Обновить" />
 
 </form>
+
+<script>
+    function checkISBN()
+    {
+        let isbnInput = document.querySelector('[name="EditionISBN"]');
+        let isbn = isbnInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="EditionISBN"]');
+        
+        if (isbn === '') {
+            errorSpan.innerHTML = "Выберите ISBN";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            isbnInput.style.border = "";
+            return true;
+        }
+    }
+    
+    function checkPrice()
+    {
+        let priceInput = document.querySelector('[name="Price"]');
+        let price = priceInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Price"]');
+        
+        if (price === '') {
+            errorSpan.innerHTML = "Введите цену";
+            errorSpan.style.color = "red";
+            priceInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            priceInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkSection()
+    {
+        let sectionInput = document.querySelector('[name="Section"]');
+        let section = sectionInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Section"]');
+        
+        if (section === '') {
+            errorSpan.innerHTML = "Введите секцию";
+            errorSpan.style.color = "red";
+            sectionInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            sectionInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkShelf()
+    {
+        let shelfInput = document.querySelector('[name="Shelf"]');
+        let shelf = shelfInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Shelf"]');
+        
+        if (shelf === '') {
+            errorSpan.innerHTML = "Введите стеллаж";
+            errorSpan.style.color = "red";
+            shelfInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            shelfInput.style.border = "";
+            return true;
+        }
+    }
+
+    let form = document.getElementById('exemplarForm');
+            form.addEventListener('submit', function(event) {
+            let isEditionISBNOk = checkISBN();
+            let isPriceOk = checkPrice();
+            let isShelfOk = checkShelf();
+            let isSectionOk = checkSection();
+    
+            if (!isEditionISBNOk || !isPriceOk || !isShelfOk || !isSectionOk) {
+                event.preventDefault();
+            }
+        });
+
+         document.querySelector('[name="EditionISBN"]').addEventListener('input', checkISBN);
+         document.querySelector('[name="Price"]').addEventListener('input', checkPrice);
+         document.querySelector('[name="Shelf"]').addEventListener('input', checkShelf);
+         document.querySelector('[name="Section"]').addEventListener('input', checkSection);
+
+</script>

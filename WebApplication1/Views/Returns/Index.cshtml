@@ -23,9 +23,9 @@
         {
             <tr>
                 <td>@item.Id</td>
-                <td>@item.ClientId</td>
-                <td>@item.EmployeeId</td>
-                <td>@item.ExemplarId</td>
+                <td>@item.Client?.Name @item.Client?.Surname</td>
+                <td>@item.Employee?.Name @item.Employee?.Surname</td>
+                <td>@item.Exemplar?.EditionISBN</td>
                 <td>
                 @if (item.Status == ReturnStatus.InProcess)
                 {

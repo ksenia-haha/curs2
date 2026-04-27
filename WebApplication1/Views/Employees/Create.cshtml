@@ -6,12 +6,7 @@
 
 <h1>Добавление работника</h1>
 
-<form method="post" asp-controller="Employees" asp-action="Create">
-    <div class="form-input">
-        <label asp-for="Id"></label>
-        <input asp-for="Id" />
-        <span asp-validation-for="Id"></span>
-    </div>
+<form method="post" asp-controller="Employees" asp-action="Create" id="employeeForm">
 
     <div class="form-input">
         <label asp-for="Surname"></label>
@@ -61,3 +56,154 @@
     <input type="submit" value="Отправить" />
 
 </form>
+
+<script>
+    function checkSurname()
+    {
+        let surnameInput = document.querySelector('[name="Surname"]');
+        let surname = surnameInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Surname"]');
+        
+        if (surname === '') {
+            errorSpan.innerHTML = "Введите фамилию";
+            errorSpan.style.color = "red";
+            surnameInput.style.border = "2px solid red";
+            return false;
+        } else if (surname.length < 2) {
+            errorSpan.innerHTML = "Фамилия слишком короткая";
+            errorSpan.style.color = "red";
+            surnameInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            surnameInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkName()
+    {
+        let nameInput = document.querySelector('[name="Name"]');
+        let name = nameInput.value.trim();
+        
+        let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
+        
+        if (name === '') {
+            errorSpan.innerHTML = "Введите имя";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
+        } else if (name.length < 2) {
+            errorSpan.innerHTML = "Имя слишком короткое";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            nameInput.style.border = "";
+            return true;
+        }
+    }
+
+     function checkPosition() {
+        let input = document.querySelector('[name="Position"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Position"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Введите должность";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+    function checkLevel() {
+        let input = document.querySelector('[name="Level"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Level"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите уровень доступа";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+    function checkLogin() {
+        let input = document.querySelector('[name="Login"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Login"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Введите логин";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else if (digits.length < 4) {
+            errorSpan.innerHTML = "Логин не может быть короче 4 символов";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+    function checkPassword() {
+        let input = document.querySelector('[name="Password"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="Password"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Введите пароль";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else if (digits.length < 4) {
+            errorSpan.innerHTML = "Пароль не может быть короче 4 символов";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+     let form = document.getElementById('employeeForm');
+        form.addEventListener('submit', function(event) {
+        let isSurnameOk = checkSurname();
+        let isNameOk = checkName();
+        let isLoginOk = checkLogin();
+        let isPasswordOk = checkPassword();
+        let isPositionOk = checkPosition();
+        let isLevelOk = checkLevel();
+        
+    
+        if (!isSurnameOk || !isNameOk || !isLoginOk || !isPasswordOk || !isPositionOk || !isLevelOk) {
+            event.preventDefault();
+        }
+    });
+
+     document.querySelector('[name="Surname"]').addEventListener('input', checkSurname);
+     document.querySelector('[name="Name"]').addEventListener('input', checkName);
+     document.querySelector('[name="Position"]').addEventListener('input', checkPosition);
+     document.querySelector('[name="Login"]').addEventListener('input', checkLogin);
+     document.querySelector('[name="Password"]').addEventListener('input', checkPassword);
+     document.querySelector('[name="Level"]').addEventListener('input', checkLevel);
+
+</script>

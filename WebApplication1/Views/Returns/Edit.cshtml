@@ -9,7 +9,7 @@
 <h1>@ViewData["Title"]</h1>
 
 
-<form method="post" asp-controller="Returns" asp-action="Edit">
+<form method="post" asp-controller="Returns" asp-action="Edit" id="returnForm">
 
 
     <div class="form-input">
@@ -45,3 +45,73 @@
     <input type="submit" value="Отправить" />
 
 </form>
+
+<script>
+     function checkClient() {
+        let input = document.querySelector('[name="ClientId"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="ClientId"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите клиента";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+    function checkEmployee() {
+        let input = document.querySelector('[name="EmployeeId"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="EmployeeId"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите сотрудника";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+
+    function checkExemplar() {
+        let input = document.querySelector('[name="ExemplarId"]');
+        let value = input.value.trim();
+        let errorSpan = document.querySelector('[data-valmsg-for="ExemplarId"]');
+        
+        if (value === '') {
+            errorSpan.innerHTML = "Выберите экземпляр";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            input.style.border = "";
+            return true;
+        }
+    }
+    
+    
+     let form = document.getElementById('returnForm');
+        form.addEventListener('submit', function(event) {
+        let isClientIdOk = checkClient();
+        let isEmployeeIdOk = checkEmployee();
+        let isExemplarOk = checkExemplar();
+    
+        if (!isClientIdOk || !isEmployeeIdOk || !isExemplarOk) {
+            event.preventDefault();
+        }
+    });
+
+     document.querySelector('[name="ClientId"]').addEventListener('input', checkClient);
+     document.querySelector('[name="EmployeeId"]').addEventListener('input', checkEmployee);
+     document.querySelector('[name="ExemplarId"]').addEventListener('input', checkExemplar);
+
+</script>
