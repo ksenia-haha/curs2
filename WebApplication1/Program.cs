@@ -2,6 +2,7 @@ using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -53,5 +56,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Log}/{action=Index}/{id?}");
+
+app.MapHub<ClientHub>("/clienthub");
 
 app.Run();

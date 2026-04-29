@@ -1,10 +1,13 @@
-﻿using Domain.Interfaces;
-using Domain;
+﻿using Domain;
+using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using WebApplication1.Data;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Client = WebApplication1.Models.Client;
+using WebApplication1.Hubs;
 
 
 namespace WebApplication1.Controllers
@@ -14,11 +17,13 @@ namespace WebApplication1.Controllers
 
         private readonly IClientRepository _repository;
         private readonly ISaleRepository _saleRepository;
+        private readonly IHubContext<ClientHub> _hubContext;
 
-        public ClientsController(IClientRepository repository, ISaleRepository saleRepository)
+        public ClientsController(IClientRepository repository, ISaleRepository saleRepository, IHubContext<ClientHub> hubContext)
         {
             _repository = repository;
             _saleRepository = saleRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -30,8 +35,22 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(Client client)
-        {  
-            await _repository.CreateAsync(MapClient(client));
+        {
+            //await _repository.CreateAsync(MapClient(client));
+
+            //await _hubContext.Clients.All.SendAsync("ClientCreated",
+            //        client.Id, client.Surname, client.Name, client.Patronymic, client.PhoneNumber, client.Address);
+
+            var domainClient = MapClient(client);
+            await _repository.CreateAsync(domainClient);
+
+            await _hubContext.Clients.All.SendAsync("ClientCreated",
+                    domainClient.Id,
+                    domainClient.Surname,
+                    domainClient.Name,
+                    domainClient.Patronymic,
+                    domainClient.PhoneNumber,
+                    domainClient.Address);
 
             return RedirectToAction(nameof(Index));
         }
@@ -57,6 +76,7 @@ namespace WebApplication1.Controllers
             var clientToDelete = new Domain.Client { Id = client.Id };
 
             await _repository.DeleteAsync(clientToDelete);
+            await _hubContext.Clients.All.SendAsync("ClientDeleted", clientToDelete.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -81,6 +101,10 @@ namespace WebApplication1.Controllers
             }
 
             await _repository.UpdateAsync(clientToEdit);
+
+            await _hubContext.Clients.All.SendAsync("ClientUpdated",
+                    client.Id, client.Surname, client.Name, client.Patronymic, client.PhoneNumber, client.Address);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -104,6 +128,8 @@ namespace WebApplication1.Controllers
                 Address = clientDomain.Address,
                 PhoneNumber = clientDomain.PhoneNumber
             };
+
+
             return View(clientWeb);
         }
 

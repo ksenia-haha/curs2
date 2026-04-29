@@ -7,7 +7,7 @@
 <h1>@ViewData["Title"]</h1>
 
 
-<table class="table">
+<table class="table" id="clientsTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -42,8 +42,55 @@
     </tbody>
 </table>
 
+
 <button style="width: 170px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Clients" asp-action="Create">Добавить клиента</a>
 </button>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/clienthub")
+    .build();
+
+    connection.on("ClientCreated", (id, surname, name, patronymic, phone, address) => {
+    const newRow = `
+    <tr id="clientRow_${id}">
+    <td>${id}</td>
+    <td class="surname">${surname}</td>
+    <td class="name">${name}</td>
+    <td class="patronymic">${patronymic || ''}</td>
+    <td class="address">${address || ''}</td>
+    <td class="phone">${phone}</td>
+    <td>
+    <a href="/Clients/Edit/${id}">Редактировать</a>
+    <a href="/Clients/Delete/${id}" class="delete-btn"
+    onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#clientsTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("ClientUpdated", (id, surname, name, patronymic, phone) => {
+    const row = document.getElementById(`clientRow_${id}`);
+    if (row) {
+    row.querySelector('.surname').textContent = surname;
+    row.querySelector('.name').textContent = name;
+    row.querySelector('.patronymic').textContent = patronymic || '';
+    row.querySelector('.phone').textContent = phone;
+    }
+    });
+
+    connection.on("ClientDeleted", (id) => {
+    const row = document.getElementById(`clientRow_${id}`);
+    if (row) {
+    row.remove();
+    }
+    });
+
+    connection.start();
+</script>

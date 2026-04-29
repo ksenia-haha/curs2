@@ -3,11 +3,14 @@ using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using SQLitePCL;
 using WebApplication1.Data;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Sale = WebApplication1.Models.Sale;
 using SaleAndExemplar = Domain.SaleAndExemplar;
+using WebApplication1.Hubs;
 
 namespace WebApplication1.Controllers
 {
