@@ -57,6 +57,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Log}/{action=Index}/{id?}");
 
-app.MapHub<ClientHub>("/clienthub");
+app.MapHub<ClientHub>("/clientHub");
 
 app.Run();

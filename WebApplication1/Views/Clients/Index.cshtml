@@ -52,8 +52,10 @@
 
 
 <script>
+
+ 
     const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/clienthub")
+    .withUrl("/clientHub")
     .build();
 
     connection.on("ClientCreated", (id, surname, name, patronymic, phone, address) => {
@@ -63,7 +65,7 @@
     <td class="surname">${surname}</td>
     <td class="name">${name}</td>
     <td class="patronymic">${patronymic || ''}</td>
-    <td class="address">${address || ''}</td>
+    <td class="address">${address || ''}</td>  
     <td class="phone">${phone}</td>
     <td>
     <a href="/Clients/Edit/${id}">Редактировать</a>
@@ -75,13 +77,14 @@
     document.querySelector('#clientsTable tbody').insertAdjacentHTML('afterbegin', newRow);
     });
 
-    connection.on("ClientUpdated", (id, surname, name, patronymic, phone) => {
+    connection.on("ClientUpdated", (id, surname, name, patronymic, phone, address) => {
     const row = document.getElementById(`clientRow_${id}`);
     if (row) {
     row.querySelector('.surname').textContent = surname;
     row.querySelector('.name').textContent = name;
     row.querySelector('.patronymic').textContent = patronymic || '';
     row.querySelector('.phone').textContent = phone;
+    row.querySelector('.address').textContent = address;
     }
     });
 
@@ -89,6 +92,26 @@
     const row = document.getElementById(`clientRow_${id}`);
     if (row) {
     row.remove();
+    }
+    });
+
+    document.querySelectorAll('#clientsTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `clientRow_${id}`;
+       
+
+    // Добавляем классы к ячейкам для обновления
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 6) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('surname');
+    cells[2].classList.add('name');
+    cells[3].classList.add('patronymic');
+    cells[4].classList.add('address');
+    cells[5].classList.add('phone');
+    }
     }
     });
 
