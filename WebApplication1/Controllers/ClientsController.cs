@@ -36,11 +36,6 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Client client)
         {
-            //await _repository.CreateAsync(MapClient(client));
-
-            //await _hubContext.Clients.All.SendAsync("ClientCreated",
-            //        client.Id, client.Surname, client.Name, client.Patronymic, client.PhoneNumber, client.Address);
-
             var domainClient = MapClient(client);
             await _repository.CreateAsync(domainClient);
 
