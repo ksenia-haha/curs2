@@ -7,7 +7,7 @@
 
 <h1>Продажи</h1>
 
-<table class="table">
+<table class="table" id="salesTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -45,3 +45,65 @@
 <button style="width: 200px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Sales" asp-action="Create">Добавить продажу</a>
 </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/saleHub")
+    .build();
+
+    connection.on("SaleCreated", (id, clientName, employeeName, date, sum) => {
+    const newRow = `
+    <tr id="saleRow_${id}">
+    <td style="text-align: center;">${id}</td>
+    <td class="clientName">${clientName}</td>
+    <td class="employeeName">${employeeName}</td>
+    <td class="date">${date}</td>
+    <td class="sum">${sum}</td>
+    <td>
+    <a href="/Sales/Edit/${id}">Редактировать</a> |
+    <a href="/Sales/Details/${id}">Подробнее</a> |
+    <a href="/Sales/Delete/${id}" class="delete-btn" onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#salesTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("SaleUpdated", (id, clientName, employeeName, date, sum) => {
+    const row = document.getElementById(`saleRow_${id}`);
+    if (row) {
+    row.querySelector('.clientName').textContent = clientName;
+    row.querySelector('.employeeName').textContent = employeeName;
+    row.querySelector('.date').textContent = date;
+    row.querySelector('.sum').textContent = sum;
+    }
+    });
+
+    connection.on("SaleDeleted", (id) => {
+    const row = document.getElementById(`saleRow_${id}`);
+    if (row) {
+    row.remove();
+    }
+    });
+
+    document.querySelectorAll('#salesTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `saleRow_${id}`;
+            
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 5) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('clientName');
+    cells[2].classList.add('employeeName');
+    cells[3].classList.add('date');
+    cells[4].classList.add('sum');
+    }
+    }
+    });
+
+    connection.start();
+</script>

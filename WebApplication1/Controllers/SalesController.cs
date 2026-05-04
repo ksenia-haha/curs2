@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,10 @@ using Microsoft.AspNetCore.SignalR;
 using SQLitePCL;
 using WebApplication1.Data;
 using WebApplication1.Hubs;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Sale = WebApplication1.Models.Sale;
 using SaleAndExemplar = Domain.SaleAndExemplar;
-using WebApplication1.Hubs;
 
 namespace WebApplication1.Controllers
 {
@@ -21,14 +22,16 @@ namespace WebApplication1.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ISaleAndExemplarRepository _saleAndExemplarRepository;
         private readonly IExemplarRepository _exemplarRepository;
+        private readonly IHubContext<SaleHub> _hubContext;
 
-        public SalesController( ISaleRepository repository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, ISaleAndExemplarRepository saleAndExemplarRepository, IExemplarRepository exemplarRepository)
+        public SalesController( ISaleRepository repository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, ISaleAndExemplarRepository saleAndExemplarRepository, IExemplarRepository exemplarRepository, IHubContext<SaleHub> hubContext)
         {
             _repository = repository;
             _clientRepository = clientRepository;
             _employeeRepository = employeeRepository;
             _saleAndExemplarRepository = saleAndExemplarRepository;
             _exemplarRepository = exemplarRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -102,9 +105,22 @@ namespace WebApplication1.Controllers
 
             domainSale.Sum = totalSum;
             await _repository.UpdateAsync(domainSale);
-            
+           
 
             await transaction.CommitAsync();
+
+            var client = await _clientRepository.GetByIdAsync(new Domain.Client { Id = domainSale.ClientId });
+            var employee = await _employeeRepository.GetByIdAsync(new Domain.Employee { Id = domainSale.EmployeeId });
+
+            string clientName = client != null ? $"{client.Surname} {client.Name}" : "Не указан";
+            string employeeName = employee != null ? $"{employee.Surname} {employee.Name}" : "Не указан";
+
+            await _hubContext.Clients.All.SendAsync("SaleCreated",
+                domainSale.Id,
+                clientName,     
+                employeeName,  
+                domainSale.Date,
+                domainSale.Sum);
 
             return RedirectToAction(nameof(Index));
         }
@@ -125,6 +141,7 @@ namespace WebApplication1.Controllers
             var saleToDelete = new Domain.Sale { Id = sale.Id };
 
             await _repository.DeleteAsync(saleToDelete);
+            await _hubContext.Clients.All.SendAsync("SaleDeleted", saleToDelete.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -147,6 +164,20 @@ namespace WebApplication1.Controllers
             }
 
             await _repository.UpdateAsync(saleToEdit);
+
+            var client = await _clientRepository.GetByIdAsync(new Domain.Client { Id = saleToEdit.ClientId });
+            var employee = await _employeeRepository.GetByIdAsync(new Domain.Employee { Id = saleToEdit.EmployeeId });
+
+            string clientName = $"{client.Surname} {client.Name}";
+            string employeeName = $"{employee.Surname} {employee.Name}";
+
+            await _hubContext.Clients.All.SendAsync("SaleUpdated",
+                saleToEdit.Id,
+                clientName,    
+                employeeName,    
+                saleToEdit.Date,
+                saleToEdit.Sum);
+
             return RedirectToAction(nameof(Index));
         }
 

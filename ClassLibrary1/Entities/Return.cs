@@ -9,7 +9,7 @@ namespace Domain.Entities
 {
     public class Return
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public int EmployeeId { get; set; }
         public int ClientId { get; set; }
         public int ExemplarId { get; set; }

@@ -1,24 +1,22 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-// Доделать
-
 namespace WebApplication1.Hubs
 {
     public class SaleHub: Hub
     {
-        public async Task NotifySaleAdded(int returnId, int employeeId, int clientId, int exemplarId, string status)
+        public async Task NotifySaleAdded(int saleId, string clientName, string employeeName,  string date, double sum)
         {
-            await Clients.All.SendAsync("ReturnCreated", returnId, employeeId, clientId, exemplarId, status);
+            await Clients.All.SendAsync("SaleCreated", saleId, clientName, employeeName, date, sum);
         }
 
-        public async Task NotifySaleUpdated(int returnId, int employeeId, int clientId, int exemplarId, string status)
+        public async Task NotifySaleUpdated(int saleId, string clientName, string employeeName, string date, double sum)
         {
-            await Clients.All.SendAsync("ReturnUpdated", returnId, employeeId, clientId, exemplarId, status);
+            await Clients.All.SendAsync("SaleUpdated", saleId, clientName, employeeName, date, sum);
         }
 
-        public async Task NotifySaleDeleted(int returnId)
+        public async Task NotifySaleDeleted(int saleId)
         {
-            await Clients.All.SendAsync("ReturnDeleted", returnId);
+            await Clients.All.SendAsync("SaleDeleted", saleId);
         }
     }
 }

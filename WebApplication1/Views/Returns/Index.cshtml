@@ -7,7 +7,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<table class="table">
+<table class="table" id="returnsTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -57,3 +57,78 @@
 <button style="width: 170px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Returns" asp-action="Create">Добавить возврат</a>
 </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+
+<script>
+    function getStatusText(statusCode) {
+    switch(statusCode) {
+    case 1: return "В обработке";
+    case 2: return "Принято";
+    case 3: return "Отказано";
+    default: return "Неизвестно";
+    }
+    }
+
+
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/returnHub")
+    .build();
+
+    connection.on("ReturnCreated", (id, clientName, employeeName, exemplarIsbn, status) => {
+    const statusText = getStatusText(status);
+    const newRow = `
+    <tr id="returnRow_${id}">
+    <td style="text-align: center;">${id}</td>
+    <td class="clientName">${clientName || ''}</td>
+    <td class="employeeName">${employeeName || ''}</td>
+    <td class="exemplarIsbn">${exemplarIsbn || ''}</td>
+    <td class="status">${statusText}</td>
+    <td>
+    <a href="/Returns/Edit/${id}">Редактировать</a>
+    <a href="/Returns/Delete/${id}" class="delete-btn" onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#returnsTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("ReturnUpdated", (id, clientName, employeeName, exemplarIsbn, status) => {
+    const row = document.getElementById(`returnRow_${id}`);
+    if (row) {
+    const statusText = getStatusText(status);
+    row.querySelector('.clientName').textContent = clientName || '';
+    row.querySelector('.employeeName').textContent = employeeName || '';
+    row.querySelector('.exemplarIsbn').textContent = exemplarIsbn || '';
+    row.querySelector('.status').textContent = statusText;
+    }
+    });
+
+    connection.on("ReturnDeleted", (id) => {
+    const row = document.getElementById(`returnRow_${id}`);
+    if (row) {
+    row.remove();
+    }
+    });
+
+    document.querySelectorAll('#returnsTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `returnRow_${id}`;
+            
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 5) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('clientName');    
+    cells[2].classList.add('employeeName'); 
+    cells[3].classList.add('exemplarIsbn'); 
+    cells[4].classList.add('status');       
+    }
+    }
+
+    });
+
+    connection.start();
+</script>

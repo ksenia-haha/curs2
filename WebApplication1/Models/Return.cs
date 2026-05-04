@@ -7,7 +7,7 @@ namespace WebApplication1.Models
     public class Return
     {
         [Display(Name = "ID")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Display(Name = "ID сотрудника")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]

@@ -4,7 +4,9 @@ using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using WebApplication1.Data;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Return = WebApplication1.Models.Return;
 
@@ -18,13 +20,15 @@ namespace WebApplication1.Controllers
         private readonly IClientRepository _clientRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IExemplarRepository _exemplarRepository;
+        private readonly IHubContext<ReturnHub> _hubContext;
 
-        public ReturnsController(IReturnRepository repository, ISaleRepository saleRepository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, IExemplarRepository exmplarRepository)
+        public ReturnsController(IReturnRepository repository, ISaleRepository saleRepository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, IExemplarRepository exmplarRepository, IHubContext<ReturnHub> hubContext)
         {
             _repository = repository;
             _clientRepository = clientRepository;
             _employeeRepository = employeeRepository;
             _exemplarRepository = exmplarRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -67,8 +71,26 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(Return toReturn)
-        {  
-            await _repository.CreateAsync(MapReturn(toReturn));
+        {
+            var domainReturn = MapReturn(toReturn);
+            await _repository.CreateAsync(domainReturn);
+
+            var client = await _clientRepository.GetByIdAsync(new Domain.Client { Id = toReturn.ClientId });
+            var employee = await _employeeRepository.GetByIdAsync(new Domain.Employee { Id = toReturn.EmployeeId });
+            var exemplar = await _exemplarRepository.GetByIdAsync(new Domain.Exemplar { Id = toReturn.ExemplarId });
+
+            string clientName = $"{client.Name} {client.Surname}";
+            string employeeName = $"{employee.Name} {employee.Surname}";
+            string exemplarIsbn = exemplar?.EditionISBN;
+
+
+            await _hubContext.Clients.All.SendAsync("ReturnCreated",
+                domainReturn.Id,
+                clientName,     
+                employeeName,  
+                exemplarIsbn,    
+                (int)toReturn.Status);
+
 
             return RedirectToAction(nameof(Index));
         }
@@ -79,7 +101,6 @@ namespace WebApplication1.Controllers
             r.EmployeeId = toReturn.EmployeeId;
             r.ClientId = toReturn.ClientId;
             r.ExemplarId = toReturn.ExemplarId;
-            //r.SaleId = toReturn.SaleId;
             r.Status = toReturn.Status;
 
             return r;
@@ -90,6 +111,7 @@ namespace WebApplication1.Controllers
             var toReturnToDelete = new Domain.Entities.Return { Id = toReturn.Id };
 
             await _repository.DeleteAsync(toReturnToDelete);
+            await _hubContext.Clients.All.SendAsync("ReturnDeleted", toReturnToDelete.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -102,7 +124,6 @@ namespace WebApplication1.Controllers
                 EmployeeId = toReturn.EmployeeId,
                 ClientId = toReturn.ClientId,
                 ExemplarId = toReturn.ExemplarId,
-                //SaleId = toReturn.SaleId,
                 Status = toReturn.Status,
             };
 
@@ -113,6 +134,23 @@ namespace WebApplication1.Controllers
             }
 
             await _repository.UpdateAsync(toReturnToEdit);
+
+            var client = await _clientRepository.GetByIdAsync(new Domain.Client { Id = toReturn.ClientId });
+            var employee = await _employeeRepository.GetByIdAsync(new Domain.Employee { Id = toReturn.EmployeeId });
+            var exemplar = await _exemplarRepository.GetByIdAsync(new Domain.Exemplar { Id = toReturn.ExemplarId });
+
+            string clientName = $"{client.Name} {client.Surname}";
+            string employeeName = $"{employee.Name} {employee.Surname}";
+            string exemplarIsbn = exemplar?.EditionISBN;
+
+            await _hubContext.Clients.All.SendAsync("ReturnUpdated",
+                toReturn.Id,
+                clientName,
+                employeeName,
+                exemplarIsbn,
+                (int)toReturn.Status);
+
+
             return RedirectToAction(nameof(Index));
         }
 

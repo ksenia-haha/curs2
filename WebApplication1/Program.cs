@@ -61,5 +61,7 @@ app.MapHub<ClientHub>("/clientHub");
 app.MapHub<EditionHub>("/editionHub");
 app.MapHub<EmployeeHub>("/employeeHub");
 app.MapHub<ExemplarHub>("/exemplarHub");
+app.MapHub<ReturnHub>("/returnHub");
+app.MapHub<SaleHub>("/saleHub");
 
 app.Run();
