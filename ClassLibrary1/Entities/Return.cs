@@ -12,7 +12,6 @@ namespace Domain.Entities
         public int? Id { get; set; }
         public int EmployeeId { get; set; }
         public int ClientId { get; set; }
-        //public int SaleId { get; set; }
         public int ExemplarId { get; set; }
 
         public ReturnStatus Status { get; set; } = ReturnStatus.InProcess;
@@ -31,7 +30,6 @@ namespace Domain.Entities
 
         public Employee Employee { get; set; }
         public Client Client { get; set; }
-        //public Sale Sale { get; set; }
         public Exemplar Exemplar { get; set; }
     }
 }

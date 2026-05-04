@@ -8,7 +8,7 @@
 
 <h1>Экземпляры</h1>
 
-<table class="table">
+<table class="table" id="exemplarsTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -26,7 +26,6 @@
             <tr>
                 <td>@item.Id</td>
                 <td>@item.EditionISBN</td>
-                @* <td>@item.Edition</td>  *@
                 <td>@item.Section</td>
                 <td>@item.Shelf</td>
                 <td>@item.Price</td>
@@ -44,10 +43,8 @@
                         <span>Брак</span>
                     }
                 </td>
-                @* <td>@item.Status</td> *@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать</a> |
-                    @* <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | *@
                     @if (isAdmin)
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">Удалить</a>
@@ -62,3 +59,81 @@
 <button style="width: 200px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Exemplars" asp-action="Create">Добавить экземпляр</a>
 </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+
+<script>
+    function getStatusText(statusCode) {
+    switch(statusCode) {
+    case 1: return "В наличии";
+    case 2: return "Продан";
+    case 3: return "Брак";
+    default: return "Неизвестно";
+    }
+    }
+
+
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/exemplarHub")
+    .build();
+
+    connection.on("ExemplarCreated", (id, editionIsbn, section, shelf, price, status) => {
+    const statusText = getStatusText(status);
+    const newRow = `
+    <tr id="exemplarRow_${id}">
+    <td>${id}</td>
+    <td class="editionIsbn">${editionIsbn}</td>
+    <td class="section">${section}</td>
+    <td class="shelf">${shelf || ''}</td>
+    <td class="price">${price || ''}</td>
+    <td class="status">${statusText}</td>
+    <td>
+    <a href="/Exemplars/Edit/${id}">Редактировать</a>
+    <a href="/Exemplars/Delete/${id}" class="delete-btn"
+    onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#exemplarsTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("ExemplarUpdated", (id, editionIsbn, section, shelf, price, status) => {
+    const row = document.getElementById(`exemplarRow_${id}`);
+    if (row) {
+    const statusText = getStatusText(status);
+    row.querySelector('.editionIsbn').textContent = editionIsbn;
+    row.querySelector('.section').textContent = section;
+    row.querySelector('.shelf').textContent = shelf || '';
+    row.querySelector('.price').textContent = price;
+    row.querySelector('.status').textContent = statusText;
+    }
+    });
+
+    connection.on("ExemplarDeleted", (id) => {
+    const row = document.getElementById(`exemplarRow_${id}`);
+    if (row) {
+    row.remove();
+    }
+    });
+
+    document.querySelectorAll('#exemplarsTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `exemplarRow_${id}`;
+       
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 6) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('editionIsbn');
+    cells[2].classList.add('section');
+    cells[3].classList.add('shelf');
+    cells[4].classList.add('price');
+    cells[5].classList.add('status');
+    }
+    }
+    });
+
+    connection.start();
+</script>

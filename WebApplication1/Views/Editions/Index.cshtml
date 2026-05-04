@@ -8,7 +8,7 @@
 <h1>Издания</h1>
 
 
-<table class="table">
+<table class="table" id="editionsTable">
     <thead>
         <tr>
             <th>ISBN</th>
@@ -47,3 +47,70 @@
 <button style="width: 170px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Editions" asp-action="Create">Добавить издание</a>
 </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+<script>
+
+ 
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/editionHub")
+    .build();
+
+    connection.on("EditionCreated", (isbn, name, author, genre, publisher, year) => {
+    const newRow = `
+    <tr id="editionRow_${isbn}">
+    <td class="isbn">${isbn}</td>
+    <td class="name">${name}</td>
+    <td class="author">${author}</td>
+    <td class="genre">${genre || ''}</td>
+    <td class="publisher">${publisher|| ''}</td>
+    <td class="year">${year}</td>
+    <td>
+    <a href="/Editions/Edit/${isbn}">Редактировать</a>
+    <a href="/Editions/Delete/${isbn}" class="delete-btn"
+    onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#editionsTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("EditionUpdated", (isbn, name, author, genre, publisher, year) => {
+    const row = document.getElementById(`editionRow_${isbn}`);
+    if (row) {
+    row.querySelector('.name').textContent = name;
+    row.querySelector('.author').textContent = author;
+    row.querySelector('.genre').textContent = genre;
+    row.querySelector('.publisher').textContent = publisher || '';
+    row.querySelector('.year').textContent = year;
+    }
+    });
+
+    connection.on("EditionDeleted", (isbn) => {
+    const row = document.getElementById(`editionRow_${isbn}`);
+    if (row) {
+    row.remove();
+    }
+    });
+
+    document.querySelectorAll('#editionsTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `editionRow_${id}`;
+    
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 6) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('name');
+    cells[2].classList.add('author');
+    cells[3].classList.add('genre');
+    cells[4].classList.add('publisher');
+    cells[5].classList.add('year');
+    }
+    }
+    });
+
+    connection.start();
+</script>

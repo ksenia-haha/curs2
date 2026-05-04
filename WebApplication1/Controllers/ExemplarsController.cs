@@ -3,6 +3,8 @@ using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Exemplar = WebApplication1.Models.Exemplar;
 
@@ -13,11 +15,13 @@ namespace WebApplication1.Controllers
 
         private readonly IExemplarRepository _repository;
         private readonly IEditionRepository _editionRepository;
+        private readonly IHubContext<ExemplarHub> _hubContext;
 
-        public ExemplarsController(IExemplarRepository repository, IEditionRepository editionRepository)
+        public ExemplarsController(IExemplarRepository repository, IEditionRepository editionRepository, IHubContext<ExemplarHub> hubContext)
         {
             _repository = repository;
             _editionRepository = editionRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -45,7 +49,19 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Exemplar exemplar)
         {
-            await _repository.CreateAsync(MapExemplar(exemplar));
+            //await _repository.CreateAsync(MapExemplar(exemplar));
+
+            var domainExemplar = MapExemplar(exemplar);
+            await _repository.CreateAsync(domainExemplar);
+
+            await _hubContext.Clients.All.SendAsync("ExemplarCreated",
+                    domainExemplar.Id,
+                    domainExemplar.EditionISBN,
+                    domainExemplar.Section,
+                    domainExemplar.Shelf,
+                    domainExemplar.Price,
+                    (int)domainExemplar.Status
+                    );
 
             return RedirectToAction(nameof(Index));
         }
@@ -68,6 +84,9 @@ namespace WebApplication1.Controllers
             var exemplarToDelete = new Domain.Exemplar { Id = exemplar.Id };
 
             await _repository.DeleteAsync(exemplarToDelete);
+
+            await _hubContext.Clients.All.SendAsync("ExemplarDeleted", exemplarToDelete.Id);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -83,6 +102,15 @@ namespace WebApplication1.Controllers
                 Status = exemplar.Status,
                 Price = exemplar.Price,
             };
+
+            await _hubContext.Clients.All.SendAsync("ExemplarUpdated",
+                    exemplarToEdit.Id,
+                    exemplarToEdit.EditionISBN,
+                    exemplarToEdit.Section,
+                    exemplarToEdit.Shelf,
+                    exemplarToEdit.Price,
+                    exemplarToEdit.Status
+                    );
 
             if (exemplar.Id == 0)
             {
@@ -112,6 +140,7 @@ namespace WebApplication1.Controllers
                 Section = exemplarDomain.Section,
                 Shelf = exemplarDomain.Shelf,
                 Price = exemplarDomain.Price,
+                Status = exemplarDomain.Status,
             };
 
             var editions = await _editionRepository.GetAllAsync();

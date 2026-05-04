@@ -7,7 +7,7 @@
 
 <h1>Сотрудники</h1>
 
-<table class="table">
+<table class="table" id="employeesTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -16,7 +16,7 @@
             <th>Отчество</th>
             <th>Должность</th>
             <th>Логин</th>
-            @* <th>Пароль</th> *@
+            <th style="display: none;">Пароль</th> 
             <th>Уровень доступа</th>
             <th>Действия</th>
         </tr>
@@ -31,7 +31,7 @@
                 <td>@item.Patronymic</td>
                 <td>@item.Position</td>
                 <td>@item.Login</td>
-                @* <td>@item.Password</td> *@
+                <td style="display: none;">@item.Password</td>
                 <td>@item.Level</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать</a> |
@@ -50,3 +50,75 @@
 <button style="width: 200px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Employees" asp-action="Create">Добавить сотрудника</a>
 </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/employeeHub")
+    .build();
+
+    connection.on("EmployeeCreated", (id, surname, name, patronymic, position, login, password, level) => {
+    const newRow = `
+    <tr id="employeeRow_${id}">
+    <td>${id}</td>
+    <td class="surname">${surname}</td>
+    <td class="name">${name}</td>
+    <td class="patronymic">${patronymic || ''}</td>
+    <td class="position">${position || ''}</td>
+    <td class="login">${login}</td>
+    <td class="password">${password}</td>
+    <td class="level">${level}</td>
+    <td>
+    <a href="/Employees/Edit/${id}">Редактировать</a>
+    <a href="/Employees/Delete/${id}" class="delete-btn"
+    onclick="event.preventDefault(); if(confirm('Удалить?')) fetch(this.href, {method:'POST'});">Удалить</a>
+    </td>
+    </tr>
+    `;
+    document.querySelector('#employeesTable tbody').insertAdjacentHTML('afterbegin', newRow);
+    });
+
+    connection.on("EmployeeUpdated", (id, surname, name, patronymic, position, login, password, level) => {
+    const row = document.getElementById(`employeeRow_${id}`);
+    if (row) {
+    row.querySelector('.surname').textContent = surname;
+    row.querySelector('.name').textContent = name;
+    row.querySelector('.patronymic').textContent = patronymic || '';
+    row.querySelector('.position').textContent = position;
+    row.querySelector('.login').textContent = login;
+    row.querySelector('.password').textContent = password;
+    row.querySelector('.level').textContent = level;
+    }
+    });
+
+    connection.on("EmployeeDeleted", (id) => {
+    const row = document.getElementById(`employeeRow_${id}`);
+    if (row) {
+    row.remove();
+    }
+    });
+    
+    document.querySelectorAll('#employeesTable tbody tr').forEach(row => {
+    const firstCell = row.querySelector('td:first-child');
+    if (firstCell) {
+    const id = firstCell.textContent.trim();
+    row.id = `employeeRow_${id}`;
+    
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 8) {
+    cells[0].style.textAlign = 'center';
+    cells[1].classList.add('surname');
+    cells[2].classList.add('name');
+    cells[3].classList.add('patronymic');
+    cells[4].classList.add('position');
+    cells[5].classList.add('login');
+    cells[6].classList.add('password');
+    cells[7].classList.add('level');
+    }
+    }
+    });
+
+    connection.start();
+</script>

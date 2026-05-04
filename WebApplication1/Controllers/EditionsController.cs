@@ -2,7 +2,10 @@
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -13,11 +16,13 @@ namespace WebApplication1.Controllers
         private readonly IEditionRepository _repository;
         private readonly IExemplarRepository _exemplarRepository;
         private readonly ISaleRepository _saleRepository;
+        private readonly IHubContext<EditionHub> _hubContext;
 
-        public EditionsController(IEditionRepository repository, IExemplarRepository exemplarRepository, ISaleRepository saleRepository)
+        public EditionsController(IEditionRepository repository, IExemplarRepository exemplarRepository, ISaleRepository saleRepository, IHubContext<EditionHub> hubContext)
         {
             _repository = repository;
             _exemplarRepository = exemplarRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -30,6 +35,14 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Create(Models.Edition edition)
         {
             await _repository.CreateAsync(MapEdition(edition));
+
+            await _hubContext.Clients.All.SendAsync("EditionCreated",
+                    edition.ISBN,
+                    edition.Name,
+                    edition.Author,
+                    edition.Genre,
+                    edition.Publisher,
+                    edition.Year);
 
             return RedirectToAction(nameof(Index));
         }
@@ -58,6 +71,7 @@ namespace WebApplication1.Controllers
             var editionToDelete = new Domain.Edition { ISBN = edition.Id };
 
             await _repository.DeleteAsync(editionToDelete);
+            await _hubContext.Clients.All.SendAsync("EditionDeleted", editionToDelete.ISBN);
             return RedirectToAction(nameof(Index));
         }
 
@@ -73,6 +87,14 @@ namespace WebApplication1.Controllers
                 Publisher = edition.Publisher,
                 Year = edition.Year,
             };
+
+            await _hubContext.Clients.All.SendAsync("EditionUpdated",
+                    editionToEdit.ISBN,
+                    editionToEdit.Name,
+                    editionToEdit.Author,
+                    editionToEdit.Genre,
+                    editionToEdit.Publisher,
+                    editionToEdit.Year);
 
             if (edition.Id == null)
             {
@@ -124,8 +146,6 @@ namespace WebApplication1.Controllers
                 Genre = edition.Genre,
                 Publisher = edition.Publisher,
                 Year = edition.Year,
-                //CountShop = edition.CountShop,
-                //CountSklad = edition.CountSklad,
                 Exemplars = edition.Exemplars,
             };
 

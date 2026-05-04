@@ -3,6 +3,8 @@ using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Employee = WebApplication1.Models.Employee;
 
@@ -13,11 +15,13 @@ namespace WebApplication1.Controllers
 
         private readonly IEmployeeRepository _repository;
         private readonly ISaleRepository _saleRepository;
+        private readonly IHubContext<EmployeeHub> _hubContext;
 
-        public EmployeesController(IEmployeeRepository repository, ISaleRepository saleRepository)
+        public EmployeesController(IEmployeeRepository repository, ISaleRepository saleRepository, IHubContext<EmployeeHub> hubContext)
         {
             _repository = repository;
             _saleRepository = saleRepository;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -42,9 +46,19 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Employee employee)
         {
-            
 
             await _repository.CreateAsync(MapEmployee(employee));
+
+            await _hubContext.Clients.All.SendAsync("EmployeeCreated",
+                    employee.Id,
+                    employee.Surname,
+                    employee.Name,
+                    employee.Patronymic,
+                    employee.Position,
+                    employee.Login,
+                    employee.Password,
+                    employee.Level);
+
             return RedirectToAction(nameof(Index));
         }
         private Domain.Employee MapEmployee(WebApplication1.Models.Employee employee)
@@ -67,6 +81,7 @@ namespace WebApplication1.Controllers
             var employeeToDelete = new Domain.Employee { Id = employee.Id };
 
             await _repository.DeleteAsync(employeeToDelete);
+            await _hubContext.Clients.All.SendAsync("EmployeeDeleted", employeeToDelete.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -92,7 +107,19 @@ namespace WebApplication1.Controllers
                 return View(employee);
             }
 
+
             await _repository.UpdateAsync(employeeToEdit);
+
+            await _hubContext.Clients.All.SendAsync("EmployeeUpdated",
+                    employeeToEdit.Id,
+                    employeeToEdit.Surname,
+                    employeeToEdit.Name,
+                    employeeToEdit.Patronymic,
+                    employeeToEdit.Position,
+                    employeeToEdit.Login,
+                    employeeToEdit.Password,
+                    employeeToEdit.Level);
+
             return RedirectToAction(nameof(Index));
         }
 
