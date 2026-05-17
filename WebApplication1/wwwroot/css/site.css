@@ -118,7 +118,7 @@ table {
     border-collapse: collapse;
     text-align: center;
     width: 75%;
-    margin-left: 10%;
+    margin: 0 auto;
 }
 
 th {
@@ -172,7 +172,6 @@ tr:hover {
 
 .main-btn {
     width: 250px;
-    margin-left: 42%;
-    margin-top: 20px;
     display: block;
+    margin: 20px auto 0 auto;
 }

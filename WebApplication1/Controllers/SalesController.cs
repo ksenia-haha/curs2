@@ -1,7 +1,9 @@
-﻿using Domain;
+﻿using System.Text;
+using Domain;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
@@ -143,6 +145,85 @@ namespace WebApplication1.Controllers
             await _repository.DeleteAsync(saleToDelete);
             await _hubContext.Clients.All.SendAsync("SaleDeleted", saleToDelete.Id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<bool> ConvertData(List<Domain.Sale> data, string outputPath)
+        {
+            if (!data.Any()) return false;
+            if (string.IsNullOrWhiteSpace(outputPath) || !outputPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("<!DOCTYPE html>");
+            builder.AppendLine("<html>");
+            builder.AppendLine("<head>");
+            builder.AppendLine("<meta charset=\"UTF-8\">");
+            builder.AppendLine("<title>Отчёт по продажам</title>");
+            builder.AppendLine("<style>");
+            builder.AppendLine("table { border-collapse: collapse; width: 100%; }");
+            builder.AppendLine("th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
+            builder.AppendLine("th { background-color: #8B5E3C; color: white; }");
+            builder.AppendLine("tr:nth-child(even) { background-color: #f2f2f2; }");
+            builder.AppendLine("</style>");
+            builder.AppendLine("</head>");
+            builder.AppendLine("<body>");
+            builder.AppendLine("<h1>Отчёт по продажам</h1>");
+            builder.AppendLine($"<p>Дата создания: {DateTime.Now:dd.MM.yyyy HH:mm:ss}</p>");
+            builder.AppendLine("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">");
+
+            // Шапка таблицы (только нужные колонки)
+            builder.AppendLine("<thead>");
+            builder.AppendLine("<tr>");
+            builder.AppendLine("<th>ID</th>");
+            builder.AppendLine("<th>Клиент</th>");
+            builder.AppendLine("<th>Сотрудник</th>");
+            builder.AppendLine("<th>Дата</th>");
+            builder.AppendLine("<th>Сумма</th>");
+            builder.AppendLine("</tr>");
+            builder.AppendLine("</thead>");
+
+            // Тело таблицы
+            builder.AppendLine("<tbody>");
+            foreach (var item in data)
+            {
+                builder.AppendLine("<tr>");
+                builder.AppendLine($"<td style=\"text-align: center;\">{item.Id}</td>");
+
+                // Получаем имя клиента (если есть)
+                string clientName = item.Client != null ? $"{item.Client.Surname} {item.Client.Name}" : "Не указан";
+                builder.AppendLine($"<td>{clientName}</td>");
+
+                // Получаем имя сотрудника (если есть)
+                string employeeName = item.Employee != null ? $"{item.Employee.Surname} {item.Employee.Name}" : "Не указан";
+                builder.AppendLine($"<td>{employeeName}</td>");
+
+                builder.AppendLine($"<td>{item.Date:dd.MM.yyyy}</td>");
+                builder.AppendLine($"<td style=\"text-align: right;\">{item.Sum:F2} руб.</td>");
+                builder.AppendLine("</tr>");
+            }
+            builder.AppendLine("</tbody>");
+            builder.AppendLine("</table>");
+            builder.AppendLine("</body>");
+            builder.AppendLine("</html>");
+
+            await System.IO.File.WriteAllTextAsync(outputPath, builder.ToString(), Encoding.UTF8);
+            return true;
+        }
+
+        public async Task<IActionResult> Report()
+        {
+            var sales = await _repository.GetAllAsync();
+            string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", $"sales_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+            var result = await ConvertData((List<Domain.Sale>)sales, outputPath);
+            if (result)
+            {
+                // Возвращаем файл для скачивания
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPath);
+                return File(fileBytes, "text/html", Path.GetFileName(outputPath));
+            }
+
+            return BadRequest("Ошибка при создании отчёта");
         }
 
         [HttpPost]
