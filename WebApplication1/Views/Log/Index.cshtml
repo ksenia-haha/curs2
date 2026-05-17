@@ -15,3 +15,91 @@
     </div>
     <button type="submit">Войти</button>
 </form>
+
+<script>
+    const form = document.querySelector('form');
+    const passwordInput = document.querySelector('[name="Password"]');
+    const loginInput = document.querySelector('[name="Login"]');
+    
+    let passwordErrorSpan = document.querySelector('[data-valmsg-for="Password"]');
+    if (!passwordErrorSpan) {
+        passwordErrorSpan = document.createElement('span');
+        passwordErrorSpan.setAttribute('data-valmsg-for', 'Password');
+        passwordInput.parentNode.appendChild(passwordErrorSpan);
+    }
+
+    function checkPassword() {
+        const password = passwordInput.value;
+        
+        if (password === '') {
+            passwordErrorSpan.innerHTML = "Введите пароль";
+            passwordErrorSpan.style.color = "red";
+            passwordInput.style.border = "2px solid red";
+            passwordInput.style.backgroundColor = "#ffe6e6";
+            return false;
+        } else if (password.length < 3) {
+            passwordErrorSpan.innerHTML = "Неверный пароль";
+            passwordErrorSpan.style.color = "red";
+            passwordInput.style.border = "2px solid red";
+            passwordInput.style.backgroundColor = "#ffe6e6";
+            return false;
+        } else {
+            passwordErrorSpan.innerHTML = "";
+            passwordInput.style.border = "";
+            passwordInput.style.backgroundColor = "";
+            return true;
+        }
+    }
+
+    function checkLogin() {
+        const login = loginInput.value;
+        let loginErrorSpan = document.querySelector('[data-valmsg-for="Login"]');
+        
+        if (!loginErrorSpan) {
+            loginErrorSpan = document.createElement('span');
+            loginErrorSpan.setAttribute('data-valmsg-for', 'Login');
+            loginInput.parentNode.appendChild(loginErrorSpan);
+        }
+        
+        if (login === '') {
+            loginErrorSpan.innerHTML = "Введите логин";
+            loginErrorSpan.style.color = "red";
+            loginInput.style.border = "2px solid red";
+            loginInput.style.backgroundColor = "#ffe6e6";
+            return false;
+        } else {
+            loginErrorSpan.innerHTML = "";
+            loginInput.style.border = "";
+            loginInput.style.backgroundColor = "";
+            return true;
+        }
+    }
+
+    form.addEventListener('submit', function(event) {
+        const isLoginOk = checkLogin();
+        const isPasswordOk = checkPassword();
+        
+        if (!isLoginOk || !isPasswordOk) {
+            event.preventDefault(); 
+        }
+    });
+
+    passwordInput.addEventListener('input', function() {
+        if (passwordInput.value !== '') {
+            passwordErrorSpan.innerHTML = "";
+            passwordInput.style.border = "";
+            passwordInput.style.backgroundColor = "";
+        }
+    });
+    
+    loginInput.addEventListener('input', function() {
+        let loginErrorSpan = document.querySelector('[data-valmsg-for="Login"]');
+        if (loginInput.value !== '') {
+            if (loginErrorSpan) {
+                loginErrorSpan.innerHTML = "";
+            }
+            loginInput.style.border = "";
+            loginInput.style.backgroundColor = "";
+        }
+    });
+</script>
