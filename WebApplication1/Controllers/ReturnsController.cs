@@ -174,6 +174,34 @@ namespace WebApplication1.Controllers
                 //SaleId = toReturnDomain.SaleId,
                 Status = toReturnDomain.Status,
             };
+
+            var clients = await _clientRepository.GetAllAsync();
+            var employees = await _employeeRepository.GetAllAsync();
+            var exemplars = await _exemplarRepository.GetAllAsync();
+
+            var clientList = clients.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = $"{c.Surname} | {c.Name} | {c.PhoneNumber}",
+            });
+
+            var employeeList = employees.Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = $"{e.Surname} | {e.Name} | {e.Patronymic}",
+            });
+
+            var exemplarList = exemplars.Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = $"{e.EditionISBN} | {e.Id}",
+            });
+
+            ViewBag.ClientList = clientList;
+            ViewBag.EmployeeList = employeeList;
+            ViewBag.ExemplarList = exemplarList;
+
+
             return View(toReturnWeb);
         }
 
