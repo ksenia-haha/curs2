@@ -28,13 +28,7 @@
                 <td>@item.Date</td>
                 <td>@item.Sum</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | 
-                    @if (isAdmin)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">Удалить</a>
-                    }
-                    
+                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> 
                 </td>
             </tr>
         }

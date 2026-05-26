@@ -97,7 +97,6 @@ namespace WebApplication1.Controllers
                     {
                         SaleId = domainSale.Id.Value,
                         ExemplarId = exemplarId,
-                        //Price = price, 
                     };
                     await _saleAndExemplarRepository.CreateAsync(se);
 

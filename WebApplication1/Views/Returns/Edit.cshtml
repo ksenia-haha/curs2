@@ -9,8 +9,7 @@
 <h1>@ViewData["Title"]</h1>
 
 
-<form method="post" asp-controller="Returns" asp-action="Edit" id="returnForm">
-
+<form method="post" asp-controller="Returns" asp-action="Edit" id="returnForm" class="form-input-cont">
 
     <div class="form-input">
         <label asp-for="EmployeeId"></label>
@@ -18,7 +17,7 @@
             <option value=""></option>
         </select>
         <span asp-validation-for="EmployeeId"></span>
-    </div>
+    </div> 
 
     <div class="form-input">
         <label asp-for="ClientId"></label>
@@ -27,7 +26,7 @@
             <option value=""></option>
         </select>
         <span asp-validation-for="ClientId"></span>
-    </div>
+    </div> 
 
     <div class="form-input">
         <label asp-for="ExemplarId"></label>
@@ -36,13 +35,13 @@
             <option value=""></option>
         </select>
         <span asp-validation-for="ExemplarId"></span>
-    </div>
+    </div> 
 
     <div>
     <label asp-for="Status">Статус</label> <br />
     <select asp-for="Status" asp-items="Html.GetEnumSelectList<ReturnStatus>()">
     </select>
-    </div>
+    </div> 
 
     @* <div class="form-input">
         <label asp-for="SaleId"></label>
