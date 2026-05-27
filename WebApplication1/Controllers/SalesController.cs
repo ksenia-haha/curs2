@@ -81,6 +81,7 @@ namespace WebApplication1.Controllers
             using var transaction = await _repository.BeginTransactionAsync();
             var domainSale = MapSale(sale);
             domainSale.Sum = 0;
+            domainSale.Date = DateOnly.FromDateTime(DateTime.Today);
             await _repository.CreateAsync(domainSale);
 
             double totalSum = 0;

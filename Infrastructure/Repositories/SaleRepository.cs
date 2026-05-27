@@ -68,9 +68,6 @@ namespace Infrastructure.Repositories
             if (item == null)
                 throw new ArgumentNullException("Продажа не может быть null");
 
-            if (string.IsNullOrWhiteSpace(item.Date))
-                throw new SaleException("Поле 'Дата' не может быть пустым");
-
         }
 
         public async Task DeleteAsync(Sale item)

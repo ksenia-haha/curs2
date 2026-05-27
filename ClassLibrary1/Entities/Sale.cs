@@ -14,7 +14,7 @@ namespace Domain
         public int EmployeeId { get; set; }
         public Client Client {  get; set; }
         public Employee Employee { get; set; }
-        public string Date { get; set; }
+        public DateOnly Date { get; set; }
         public double? Sum { get; set; }
 
         public List<Return> Returns { get; set; }

@@ -20,7 +20,7 @@ namespace WebApplication1.Models
 
         [Display(Name = "Дата")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
-        public string Date { get; set; }
+        public DateOnly Date { get; set; }
 
         [Display(Name = "Сумма")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
