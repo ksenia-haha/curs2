@@ -12,7 +12,7 @@ namespace Domain
         public int? Id { get; set; }
         public int ClientId { get; set; }
         public int EmployeeId { get; set; }
-        public Client Client {  get; set; }
+        public Client? Client {  get; set; }
         public Employee Employee { get; set; }
         public DateOnly Date { get; set; }
         public double? Sum { get; set; }

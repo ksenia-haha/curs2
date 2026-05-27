@@ -48,11 +48,15 @@ namespace WebApplication1.Controllers
             var clients = await _clientRepository.GetAllAsync();
             var employees = await _employeeRepository.GetAllAsync();
 
-            var clientList = clients.Select(c => new SelectListItem
+            var clientList = clients
+                .OrderBy(c => c.Id == 5 ? 0 : 1) 
+                .ThenBy(c => c.Surname)
+                .Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
                 Text = $"{c.Surname} | {c.Name} | {c.PhoneNumber}",
-            });
+            })
+                .ToList();
 
             var employeeList = employees.Select(e => new SelectListItem
             {
@@ -82,6 +86,7 @@ namespace WebApplication1.Controllers
             var domainSale = MapSale(sale);
             domainSale.Sum = 0;
             domainSale.Date = DateOnly.FromDateTime(DateTime.Today);
+
             await _repository.CreateAsync(domainSale);
 
             double totalSum = 0;

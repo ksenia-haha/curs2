@@ -38,11 +38,11 @@ namespace Infrastructure.Repositories
                 {
                     item.Client = existingClient; // Привязываем клиента
                 }
-                else
-                {
-                    // Если нет
-                    throw new ClientException($"Клиент с ID {item.ClientId} не найден");
-                }
+            else
+            {
+                // Если нет
+                throw new ClientException($"Клиент с ID {item.ClientId} не найден");
+            }
 
             // Находим сотрудника 
             var existingEmployee = await _context.Employees
