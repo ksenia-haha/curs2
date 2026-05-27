@@ -134,7 +134,6 @@ namespace Infrastructure.Repositories
             employee.Patronymic = item.Patronymic;
             employee.Position = item.Position;
             employee.Login = item.Login;
-            employee.Password = item.Password;
             employee.Level = item.Level;
 
             await _context.SaveChangesAsync();
