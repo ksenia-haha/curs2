@@ -31,6 +31,12 @@ namespace Infrastructure.Repositories
                 throw new ClientException("Такой клиент уже есть");
             }
 
+            var phoneExists = await _context.Clients.AnyAsync(c => c.PhoneNumber == item.PhoneNumber);
+            if (phoneExists)
+            {
+                throw new ClientException("Клиент с таким номером телефона уже есть");
+            }
+
             await _context.Clients.AddAsync(item);
             await _context.SaveChangesAsync();
         }
@@ -101,6 +107,12 @@ namespace Infrastructure.Repositories
         {
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == item.Id)
                 ?? throw new ClientException("Такого клиента нет в БД");
+
+            var phoneExists = await _context.Clients.AnyAsync(c => c.PhoneNumber == item.PhoneNumber);
+            if (phoneExists)
+            {
+                throw new ClientException("Клиент с таким номером телефона уже есть");
+            }
 
             client.Surname = item.Surname;
             client.Name = item.Name;
