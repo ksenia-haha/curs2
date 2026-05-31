@@ -42,6 +42,7 @@
     {
         let surnameInput = document.querySelector('[name="Surname"]');
         let surname = surnameInput.value.trim();
+        let hasDigits = /\d/;
         
         let errorSpan = document.querySelector('[data-valmsg-for="Surname"]');
         
@@ -55,7 +56,13 @@
             errorSpan.style.color = "red";
             surnameInput.style.border = "2px solid red";
             return false;
-        } else {
+        } else if (hasDigits.test(surname)) {
+        errorSpan.innerHTML = "Фамилия не может содержать цифры";
+        errorSpan.style.color = "red";
+        surnameInput.style.border = "2px solid red";
+        return false;
+        }
+        else {
             errorSpan.innerHTML = "";
             surnameInput.style.border = "";
             return true;
@@ -66,6 +73,7 @@
     {
         let nameInput = document.querySelector('[name="Name"]');
         let name = nameInput.value.trim();
+        let hasDigits = /\d/;
         
         let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
         
@@ -79,9 +87,33 @@
             errorSpan.style.color = "red";
             nameInput.style.border = "2px solid red";
             return false;
+        } else if (hasDigits.test(name)) {
+        errorSpan.innerHTML = "Имя не может содержать цифры";
+        errorSpan.style.color = "red";
+        nameInput.style.border = "2px solid red";
+        return false;
         } else {
             errorSpan.innerHTML = "";
             nameInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkPatronymic() {
+        let patronymicInput = document.querySelector('[name="Patronymic"]');
+        let patronymic = patronymicInput.value.trim();
+        let hasDigits = /\d/;
+
+        let errorSpan = document.querySelector('[data-valmsg-for="Patronymic"]');
+
+        if (hasDigits.test(patronymic)) {
+        errorSpan.innerHTML = "Отчество не может содержать цифры";
+        errorSpan.style.color = "red";
+        patronymicInput.style.border = "2px solid red";
+        return false;
+        } else {
+            errorSpan.innerHTML = "";
+            patronymicInput.style.border = "";
             return true;
         }
     }
@@ -114,14 +146,16 @@
         let isSurnameOk = checkSurname();
         let isNameOk = checkName();
         let isPhoneOk = checkPhone();
+        let isPatronymicOk = checkPatronymic();
     
-        if (!isSurnameOk || !isNameOk || !isPhoneOk) {
+        if (!isSurnameOk || !isNameOk || !isPhoneOk || !isPatronymicOk) {
             event.preventDefault();
         }
     });
 
      document.querySelector('[name="Surname"]').addEventListener('input', checkSurname);
      document.querySelector('[name="Name"]').addEventListener('input', checkName);
+     document.querySelector('[name="Patronymic"]').addEventListener('input', checkPatronymic);
      document.querySelector('[name="PhoneNumber"]').addEventListener('input', checkPhone);
 
 </script>

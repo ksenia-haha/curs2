@@ -52,51 +52,51 @@
     {
         let isbnInput = document.querySelector('[name="ISBN"]');
         let isbn = isbnInput.value.trim();
-        
+
         let errorSpan = document.querySelector('[data-valmsg-for="ISBN"]');
-        
+
         if (isbn === '') {
-        errorSpan.innerHTML = "Введите ISBN";
-        errorSpan.style.color = "red";
-        isbnInput.style.border = "2px solid red";
-        return false;
+            errorSpan.innerHTML = "Введите ISBN";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
         }
-    
-    if (isbn.length < 13) {
-        errorSpan.innerHTML = "ISBN должен содержать минимум 13 символов";
-        errorSpan.style.color = "red";
-        isbnInput.style.border = "2px solid red";
-        return false;
-    }
-    
-    let onlyDigitsAndDashes = /^[0-9-]+$/;
-    if (!onlyDigitsAndDashes.test(isbn)) {
-        errorSpan.innerHTML = "ISBN может содержать только цифры и дефисы";
-        errorSpan.style.color = "red";
-        isbnInput.style.border = "2px solid red";
-        return false;
-    }
-   
-    let hasDigits = /[0-9]/;
-    if (!hasDigits.test(isbn)) {
-        errorSpan.innerHTML = "ISBN должен содержать хотя бы одну цифру";
-        errorSpan.style.color = "red";
-        isbnInput.style.border = "2px solid red";
-        return false;
-    }
-    
-    errorSpan.innerHTML = "";
-    isbnInput.style.border = "";
-    return true;
+
+        if (isbn.length < 13) {
+            errorSpan.innerHTML = "ISBN должен содержать минимум 13 символов";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        }
+
+        let onlyDigitsAndDashes = /^[0-9-]+$/;
+        if (!onlyDigitsAndDashes.test(isbn)) {
+            errorSpan.innerHTML = "ISBN может содержать только цифры и дефисы";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        }
+
+        let hasDigits = /[0-9]/;
+        if (!hasDigits.test(isbn)) {
+            errorSpan.innerHTML = "ISBN должен содержать хотя бы одну цифру";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        }
+
+        errorSpan.innerHTML = "";
+        isbnInput.style.border = "";
+        return true;
     }
 
     function checkName()
     {
         let nameInput = document.querySelector('[name="Name"]');
         let name = nameInput.value.trim();
-        
+
         let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
-        
+
         if (name === '') {
             errorSpan.innerHTML = "Введите название";
             errorSpan.style.color = "red";
@@ -114,9 +114,10 @@
     {
         let authorInput = document.querySelector('[name="Author"]');
         let author = authorInput.value.trim();
-        
+        let hasDigits = /\d/;
+
         let errorSpan = document.querySelector('[data-valmsg-for="Author"]');
-        
+
         if (author === '') {
             errorSpan.innerHTML = "Введите ФИО автора";
             errorSpan.style.color = "red";
@@ -124,6 +125,11 @@
             return false;
         } else if (author.length < 4) {
             errorSpan.innerHTML = "ФИО автора слишком короткое";
+            errorSpan.style.color = "red";
+            authorInput.style.border = "2px solid red";
+            return false;
+        } else if (hasDigits.test(author)) {
+            errorSpan.innerHTML = "ФИО автора не может содержать цифры";
             errorSpan.style.color = "red";
             authorInput.style.border = "2px solid red";
             return false;
@@ -138,9 +144,9 @@
     {
         let genreInput = document.querySelector('[name="Genre"]');
         let genre = genreInput.value.trim();
-        
+
         let errorSpan = document.querySelector('[data-valmsg-for="Genre"]');
-        
+
         if (genre === '') {
             errorSpan.innerHTML = "Введите жанр";
             errorSpan.style.color = "red";
@@ -158,9 +164,9 @@
     {
         let publisherInput = document.querySelector('[name="Publisher"]');
         let publisher = publisherInput.value.trim();
-        
+
         let errorSpan = document.querySelector('[data-valmsg-for="Publisher"]');
-        
+
         if (publisher === '') {
             errorSpan.innerHTML = "Введите издательство";
             errorSpan.style.color = "red";
@@ -178,41 +184,71 @@
     {
         let yearInput = document.querySelector('[name="Year"]');
         let year = yearInput.value.trim();
-        
+
         let errorSpan = document.querySelector('[data-valmsg-for="Year"]');
-        
+
         if (year === '') {
-            errorSpan.innerHTML = "Введите название";
+            errorSpan.innerHTML = "Введите год издания";
             errorSpan.style.color = "red";
             yearInput.style.border = "2px solid red";
             return false;
         }
-        else {
-            errorSpan.innerHTML = "";
-            yearInput.style.border = "";
-            return true;
+
+        let onlyDigits = /^\d+$/;
+        if (!onlyDigits.test(year)) {
+            errorSpan.innerHTML = "Год должен содержать только цифры";
+            errorSpan.style.color = "red";
+            yearInput.style.border = "2px solid red";
+            return false;
         }
+
+        if (year.length !== 4) {
+            errorSpan.innerHTML = "Год должен быть в формате yyyy (например: 2024)";
+            errorSpan.style.color = "red";
+            yearInput.style.border = "2px solid red";
+            return false;
+        }
+
+        let yearNumber = parseInt(year);
+        let currentYear = new Date().getFullYear();
+
+        if (yearNumber < 1900) {
+            errorSpan.innerHTML = "Год издания не может быть раньше 1900 года";
+            errorSpan.style.color = "red";
+            yearInput.style.border = "2px solid red";
+            return false;
+        }
+
+        if (yearNumber > currentYear) {
+            errorSpan.innerHTML = `Год издания не может быть позже ${currentYear} года`;
+            errorSpan.style.color = "red";
+            yearInput.style.border = "2px solid red";
+            return false;
+        }
+
+        errorSpan.innerHTML = "";
+        yearInput.style.border = "";
+        return true;
     }
-    
-     let form = document.getElementById('editionForm');
-        form.addEventListener('submit', function(event) {
+
+    let form = document.getElementById('editionForm');
+    form.addEventListener('submit', function(event) {
         let isISBNOk = checkISBN();
         let isNameOk = checkName();
         let isAuthorOk = checkAuthor();
         let isPublisherOk = checkPublisher();
         let isYearOk = checkYear();
         let isGenreOk = checkGenre();
-    
-        if (!isISBNOk || !isNameOk || !isAuthorOk || !isPublisherOk || !isYearOk  || !isGenreOk) {
+
+        if (!isISBNOk || !isNameOk || !isAuthorOk || !isPublisherOk || !isYearOk || !isGenreOk) {
             event.preventDefault();
         }
     });
 
-     document.querySelector('[name="ISBN"]').addEventListener('input', checkISBN);
-     document.querySelector('[name="Name"]').addEventListener('input', checkName);
-     document.querySelector('[name="Author"]').addEventListener('input', checkAuthor);
-     document.querySelector('[name="Publisher"]').addEventListener('input', checkPublisher);
-     document.querySelector('[name="Year"]').addEventListener('input', checkYear);
-     document.querySelector('[name="Genre"]').addEventListener('input', checkGenre);
-
+    document.querySelector('[name="ISBN"]').addEventListener('input', checkISBN);
+    document.querySelector('[name="Name"]').addEventListener('input', checkName);
+    document.querySelector('[name="Author"]').addEventListener('input', checkAuthor);
+    document.querySelector('[name="Publisher"]').addEventListener('input', checkPublisher);
+    document.querySelector('[name="Year"]').addEventListener('input', checkYear);
+    document.querySelector('[name="Genre"]').addEventListener('input', checkGenre);
 </script>

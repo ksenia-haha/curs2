@@ -54,9 +54,10 @@
     {
         let surnameInput = document.querySelector('[name="Surname"]');
         let surname = surnameInput.value.trim();
-        
+        let hasDigits = /\d/;
+
         let errorSpan = document.querySelector('[data-valmsg-for="Surname"]');
-        
+
         if (surname === '') {
             errorSpan.innerHTML = "Введите фамилию";
             errorSpan.style.color = "red";
@@ -64,6 +65,11 @@
             return false;
         } else if (surname.length < 2) {
             errorSpan.innerHTML = "Фамилия слишком короткая";
+            errorSpan.style.color = "red";
+            surnameInput.style.border = "2px solid red";
+            return false;
+        } else if (hasDigits.test(surname)) {
+            errorSpan.innerHTML = "Фамилия не может содержать цифры";
             errorSpan.style.color = "red";
             surnameInput.style.border = "2px solid red";
             return false;
@@ -78,9 +84,10 @@
     {
         let nameInput = document.querySelector('[name="Name"]');
         let name = nameInput.value.trim();
-        
+        let hasDigits = /\d/;
+
         let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
-        
+
         if (name === '') {
             errorSpan.innerHTML = "Введите имя";
             errorSpan.style.color = "red";
@@ -91,6 +98,11 @@
             errorSpan.style.color = "red";
             nameInput.style.border = "2px solid red";
             return false;
+        } else if (hasDigits.test(name)) {
+            errorSpan.innerHTML = "Имя не может содержать цифры";
+            errorSpan.style.color = "red";
+            nameInput.style.border = "2px solid red";
+            return false;
         } else {
             errorSpan.innerHTML = "";
             nameInput.style.border = "";
@@ -98,13 +110,45 @@
         }
     }
 
-     function checkPosition() {
+    function checkPatronymic()
+    {
+        let patronymicInput = document.querySelector('[name="Patronymic"]');
+        let patronymic = patronymicInput.value.trim();
+        let hasDigits = /\d/;
+
+        let errorSpan = document.querySelector('[data-valmsg-for="Patronymic"]');
+
+        if (patronymic === '') {
+            errorSpan.innerHTML = "";
+            patronymicInput.style.border = "";
+            return true;
+        }
+
+        if (hasDigits.test(patronymic)) {
+            errorSpan.innerHTML = "Отчество не может содержать цифры";
+            errorSpan.style.color = "red";
+            patronymicInput.style.border = "2px solid red";
+            return false;
+        } else {
+            errorSpan.innerHTML = "";
+            patronymicInput.style.border = "";
+            return true;
+        }
+    }
+
+    function checkPosition() {
         let input = document.querySelector('[name="Position"]');
         let value = input.value.trim();
+        let hasDigits = /\d/;
         let errorSpan = document.querySelector('[data-valmsg-for="Position"]');
-        
+
         if (value === '') {
             errorSpan.innerHTML = "Введите должность";
+            errorSpan.style.color = "red";
+            input.style.border = "2px solid red";
+            return false;
+        } else if (hasDigits.test(value)) {
+            errorSpan.innerHTML = "Должность не может содержать цифры";
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
@@ -142,7 +186,7 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
-        } else if (digits.length < 4) {
+        } else if (value.length < 4) {
             errorSpan.innerHTML = "Логин не может быть короче 4 символов";
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
@@ -154,48 +198,27 @@
         }
     }
     
-    function checkPassword() {
-        let input = document.querySelector('[name="Password"]');
-        let value = input.value.trim();
-        let errorSpan = document.querySelector('[data-valmsg-for="Password"]');
-        
-        if (value === '') {
-            errorSpan.innerHTML = "Введите пароль";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else if (digits.length < 4) {
-            errorSpan.innerHTML = "Пароль не может быть короче 4 символов";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            input.style.border = "";
-            return true;
-        }
-    }
 
      let form = document.getElementById('employeeForm');
         form.addEventListener('submit', function(event) {
         let isSurnameOk = checkSurname();
         let isNameOk = checkName();
+        let isPatronymicOk = checkPatronymic();
         let isLoginOk = checkLogin();
-        let isPasswordOk = checkPassword();
         let isPositionOk = checkPosition();
         let isLevelOk = checkLevel();
         
     
-        if (!isSurnameOk || !isNameOk || !isLoginOk || !isPasswordOk || !isPositionOk || !isLevelOk) {
+        if (!isSurnameOk || !isNameOk || !isLoginOk || !isPositionOk || !isLevelOk || !isPatronymicOk) {
             event.preventDefault();
         }
     });
 
      document.querySelector('[name="Surname"]').addEventListener('input', checkSurname);
      document.querySelector('[name="Name"]').addEventListener('input', checkName);
+     document.querySelector('[name="Patronymic"]').addEventListener('input', checkPatronymic);
      document.querySelector('[name="Position"]').addEventListener('input', checkPosition);
      document.querySelector('[name="Login"]').addEventListener('input', checkLogin);
-     document.querySelector('[name="Password"]').addEventListener('input', checkPassword);
      document.querySelector('[name="Level"]').addEventListener('input', checkLevel);
 
 </script>

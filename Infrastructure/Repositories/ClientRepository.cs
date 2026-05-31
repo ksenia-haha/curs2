@@ -108,12 +108,6 @@ namespace Infrastructure.Repositories
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == item.Id)
                 ?? throw new ClientException("Такого клиента нет в БД");
 
-            var phoneExists = await _context.Clients.AnyAsync(c => c.PhoneNumber == item.PhoneNumber);
-            if (phoneExists)
-            {
-                throw new ClientException("Клиент с таким номером телефона уже есть");
-            }
-
             client.Surname = item.Surname;
             client.Name = item.Name;
             client.Patronymic = item.Patronymic;
