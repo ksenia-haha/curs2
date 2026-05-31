@@ -14,7 +14,6 @@
             <th>Фамилия</th>
             <th>Имя</th>
             <th>Отчество</th>
-            <th>Адрес</th>
             <th>Телефон</th>
             <th>Действия</th>
         </tr>
@@ -27,7 +26,6 @@
                 <td>@item.Surname</td>
                 <td>@item.Name</td>
                 <td>@item.Patronymic</td>
-                <td>@item.Address</td>
                 <td>@item.PhoneNumber</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать</a> |
@@ -58,14 +56,13 @@
     .withUrl("/clientHub")
     .build();
 
-    connection.on("ClientCreated", (id, surname, name, patronymic, phone, address) => {
+    connection.on("ClientCreated", (id, surname, name, patronymic, phone) => {
     const newRow = `
     <tr id="clientRow_${id}">
     <td>${id}</td>
     <td class="surname">${surname}</td>
     <td class="name">${name}</td>
     <td class="patronymic">${patronymic || ''}</td>
-    <td class="address">${address || ''}</td>  
     <td class="phone">${phone}</td>
     <td>
     <a href="/Clients/Edit/${id}">Редактировать</a>
@@ -77,14 +74,13 @@
     document.querySelector('#clientsTable tbody').insertAdjacentHTML('afterbegin', newRow);
     });
 
-    connection.on("ClientUpdated", (id, surname, name, patronymic, phone, address) => {
+    connection.on("ClientUpdated", (id, surname, name, patronymic, phone) => {
     const row = document.getElementById(`clientRow_${id}`);
     if (row) {
     row.querySelector('.surname').textContent = surname;
     row.querySelector('.name').textContent = name;
     row.querySelector('.patronymic').textContent = patronymic || '';
     row.querySelector('.phone').textContent = phone;
-    row.querySelector('.address').textContent = address;
     }
     });
 
@@ -107,8 +103,7 @@
     cells[1].classList.add('surname');
     cells[2].classList.add('name');
     cells[3].classList.add('patronymic');
-    cells[4].classList.add('address');
-    cells[5].classList.add('phone');
+    cells[4].classList.add('phone');
     }
     }
     });

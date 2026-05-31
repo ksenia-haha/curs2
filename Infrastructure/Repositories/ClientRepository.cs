@@ -105,7 +105,6 @@ namespace Infrastructure.Repositories
             client.Surname = item.Surname;
             client.Name = item.Name;
             client.Patronymic = item.Patronymic;
-            client.Address = item.Address;
             client.PhoneNumber = item.PhoneNumber;
 
             await _context.SaveChangesAsync();

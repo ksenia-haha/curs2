@@ -19,9 +19,6 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public string? Patronymic { get; set; }
 
-        [Display(Name = "Адрес")]
-        public string Address { get; set; }
-
         [Display(Name = "Номер телефона")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public string PhoneNumber { get; set; }

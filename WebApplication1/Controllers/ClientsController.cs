@@ -44,15 +44,13 @@ namespace WebApplication1.Controllers
                     domainClient.Surname,
                     domainClient.Name,
                     domainClient.Patronymic,
-                    domainClient.PhoneNumber,
-                    domainClient.Address);
+                    domainClient.PhoneNumber);
 
             return RedirectToAction(nameof(Index));
         }
         private Domain.Client MapClient(WebApplication1.Models.Client client)
         {
             var c = new Domain.Client();
-            c.Address = client.Address;
             c.Id = client.Id;
             c.Surname = client.Surname; 
             c.Name = client.Name;
@@ -84,7 +82,6 @@ namespace WebApplication1.Controllers
                 Surname = client.Surname,
                 Name = client.Name,
                 Patronymic = client.Patronymic,
-                Address = client.Address,
                 PhoneNumber = client.PhoneNumber,
 
             };
@@ -98,7 +95,7 @@ namespace WebApplication1.Controllers
             await _repository.UpdateAsync(clientToEdit);
 
             await _hubContext.Clients.All.SendAsync("ClientUpdated",
-                    client.Id, client.Surname, client.Name, client.Patronymic, client.PhoneNumber, client.Address);
+                    client.Id, client.Surname, client.Name, client.Patronymic, client.PhoneNumber);
 
             return RedirectToAction(nameof(Index));
         }
@@ -120,7 +117,6 @@ namespace WebApplication1.Controllers
                 Surname = clientDomain.Surname,
                 Name = clientDomain.Name,
                 Patronymic = clientDomain.Patronymic,
-                Address = clientDomain.Address,
                 PhoneNumber = clientDomain.PhoneNumber
             };
 

@@ -27,12 +27,6 @@
     </div>
 
     <div class="form-input">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" />
-        <span asp-validation-for="Address"></span>
-    </div>
-
-    <div class="form-input">
         <label asp-for="PhoneNumber"></label>
         <input asp-for="PhoneNumber" />
         <span asp-validation-for="PhoneNumber"></span>
@@ -91,23 +85,6 @@
             return true;
         }
     }
-
-     function checkAddress() {
-        let input = document.querySelector('[name="Address"]');
-        let value = input.value.trim();
-        let errorSpan = document.querySelector('[data-valmsg-for="Address"]');
-        
-        if (value === '') {
-            errorSpan.innerHTML = "Введите адрес";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            input.style.border = "";
-            return true;
-        }
-    }
     
     function checkPhone() {
         let input = document.querySelector('[name="PhoneNumber"]');
@@ -136,17 +113,15 @@
         form.addEventListener('submit', function(event) {
         let isSurnameOk = checkSurname();
         let isNameOk = checkName();
-        let isAddressOk = checkAddress();
         let isPhoneOk = checkPhone();
     
-        if (!isSurnameOk || !isNameOk || !isAddressOk || !isPhoneOk) {
+        if (!isSurnameOk || !isNameOk || !isPhoneOk) {
             event.preventDefault();
         }
     });
 
      document.querySelector('[name="Surname"]').addEventListener('input', checkSurname);
      document.querySelector('[name="Name"]').addEventListener('input', checkName);
-     document.querySelector('[name="Address"]').addEventListener('input', checkAddress);
      document.querySelector('[name="PhoneNumber"]').addEventListener('input', checkPhone);
 
 </script>
