@@ -176,7 +176,6 @@ namespace WebApplication1.Controllers
             builder.AppendLine($"<p>Дата создания: {DateTime.Now:dd.MM.yyyy HH:mm:ss}</p>");
             builder.AppendLine("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">");
 
-            // Шапка таблицы (только нужные колонки)
             builder.AppendLine("<thead>");
             builder.AppendLine("<tr>");
             builder.AppendLine("<th>ID</th>");
@@ -187,18 +186,15 @@ namespace WebApplication1.Controllers
             builder.AppendLine("</tr>");
             builder.AppendLine("</thead>");
 
-            // Тело таблицы
             builder.AppendLine("<tbody>");
             foreach (var item in data)
             {
                 builder.AppendLine("<tr>");
                 builder.AppendLine($"<td style=\"text-align: center;\">{item.Id}</td>");
 
-                // Получаем имя клиента (если есть)
                 string clientName = item.Client != null ? $"{item.Client.Surname} {item.Client.Name}" : "Не указан";
                 builder.AppendLine($"<td>{clientName}</td>");
 
-                // Получаем имя сотрудника (если есть)
                 string employeeName = item.Employee != null ? $"{item.Employee.Surname} {item.Employee.Name}" : "Не указан";
                 builder.AppendLine($"<td>{employeeName}</td>");
 
@@ -223,7 +219,6 @@ namespace WebApplication1.Controllers
             var result = await ConvertData((List<Domain.Sale>)sales, outputPath);
             if (result)
             {
-                // Возвращаем файл для скачивания
                 byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPath);
                 return File(fileBytes, "text/html", Path.GetFileName(outputPath));
             }

@@ -40,10 +40,15 @@
     </tbody>
 </table>
 
-
+<div style="display: flex; justify-content: space-between; margin: 0 20% 0 10%;">
 <button style="width: 170px; margin-left: 10%; margin-top: 20px;">
     <a asp-controller="Clients" asp-action="Create">Добавить клиента</a>
 </button>
+
+<button style="width: 200px; margin-left: 10%; margin-top: 20px;">
+    <a asp-controller="Clients" asp-action="Report">Скачать отчёт</a>
+</button>
+</div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>

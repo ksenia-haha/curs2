@@ -1,13 +1,14 @@
-﻿using Domain;
+﻿using System.Text;
+using Domain;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WebApplication1.Data;
 using WebApplication1.Hubs;
+using WebApplication1.Hubs;
 using WebApplication1.Models;
 using Client = WebApplication1.Models.Client;
-using WebApplication1.Hubs;
 
 
 namespace WebApplication1.Controllers
@@ -136,6 +137,80 @@ namespace WebApplication1.Controllers
 
 
             return View();
+        }
+
+        public async Task<bool> ConvertData(List<Domain.Client> data, string outputPath)
+        {
+            if (!data.Any()) return false;
+            if (string.IsNullOrWhiteSpace(outputPath) || !outputPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("<!DOCTYPE html>");
+            builder.AppendLine("<html>");
+            builder.AppendLine("<head>");
+            builder.AppendLine("<meta charset=\"UTF-8\">");
+            builder.AppendLine("<title>Отчёт по клиентам</title>");
+            builder.AppendLine("<style>");
+            builder.AppendLine("table { border-collapse: collapse; width: 100%; }");
+            builder.AppendLine("th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
+            builder.AppendLine("th { background-color: #8B5E3C; color: white; }");
+            builder.AppendLine("tr:nth-child(even) { background-color: #f2f2f2; }");
+            builder.AppendLine("</style>");
+            builder.AppendLine("</head>");
+            builder.AppendLine("<body>");
+            builder.AppendLine("<h1>Отчёт по клиентам</h1>");
+            builder.AppendLine($"<p>Дата создания: {DateTime.Now:dd.MM.yyyy HH:mm:ss}</p>");
+            builder.AppendLine($"<p>Всего клиентов: {data.Count}</p>");
+            builder.AppendLine("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">");
+
+            builder.AppendLine("<thead>");
+            builder.AppendLine("<tr>");
+            builder.AppendLine("<th>ID</th>");
+            builder.AppendLine("<th>Фамилия</th>");
+            builder.AppendLine("<th>Имя</th>");
+            builder.AppendLine("<th>Отчество</th>");
+            builder.AppendLine("<th>Номер телефона</th>");
+            builder.AppendLine("</tr>");
+            builder.AppendLine("</thead>");
+
+            builder.AppendLine("<tbody>");
+
+            var groupedData = data.OrderBy(c => c.Surname);
+
+            foreach (var item in groupedData)
+            {
+                builder.AppendLine("<tr>");
+                builder.AppendLine($"<td style=\"text-align: center;\">{item.Id}</td>");
+                builder.AppendLine($"<td>{item.Surname ?? "—"}</td>");
+                builder.AppendLine($"<td>{item.Name ?? "—"}</td>");
+                builder.AppendLine($"<td>{item.Patronymic ?? "—"}</td>");
+                builder.AppendLine($"<td>{item.PhoneNumber ?? "—"}</td>");
+
+                builder.AppendLine("</tr>");
+            }
+            builder.AppendLine("</tbody>");
+            builder.AppendLine("</table>");
+            builder.AppendLine("</body>");
+            builder.AppendLine("</html>");
+
+            await System.IO.File.WriteAllTextAsync(outputPath, builder.ToString(), Encoding.UTF8);
+            return true;
+        }
+
+        public async Task<IActionResult> Report()
+        {
+            var clients = await _repository.GetAllAsync();
+            string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", $"clients_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+            var result = await ConvertData((List<Domain.Client>)clients, outputPath);
+            if (result)
+            {
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPath);
+                return File(fileBytes, "text/html", Path.GetFileName(outputPath));
+            }
+
+            return BadRequest("Ошибка при создании отчёта");
         }
 
     }
