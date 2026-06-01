@@ -13,6 +13,7 @@ namespace Domain.Entities
         public int EmployeeId { get; set; }
         public int ClientId { get; set; }
         public int ExemplarId { get; set; }
+        public string Reason { get; set; }
 
         public ReturnStatus Status { get; set; } = ReturnStatus.InProcess;
 

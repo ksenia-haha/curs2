@@ -89,7 +89,8 @@ namespace WebApplication1.Controllers
                 clientName,     
                 employeeName,  
                 exemplarIsbn,    
-                (int)toReturn.Status);
+                (int)toReturn.Status,
+                domainReturn.Reason);
 
 
             return RedirectToAction(nameof(Index));
@@ -102,6 +103,7 @@ namespace WebApplication1.Controllers
             r.ClientId = toReturn.ClientId;
             r.ExemplarId = toReturn.ExemplarId;
             r.Status = toReturn.Status;
+            r.Reason = toReturn.Reason;
 
             return r;
         }
@@ -125,6 +127,7 @@ namespace WebApplication1.Controllers
                 ClientId = toReturn.ClientId,
                 ExemplarId = toReturn.ExemplarId,
                 Status = toReturn.Status,
+                Reason = toReturn.Reason,
             };
 
             if (toReturn.Id == null || toReturn.Id == 0)
@@ -148,7 +151,8 @@ namespace WebApplication1.Controllers
                 clientName,
                 employeeName,
                 exemplarIsbn,
-                (int)toReturn.Status);
+                (int)toReturn.Status,
+                toReturn.Reason);
 
 
             return RedirectToAction(nameof(Index));
@@ -173,6 +177,7 @@ namespace WebApplication1.Controllers
                 ExemplarId = toReturnDomain.ExemplarId,
                 //SaleId = toReturnDomain.SaleId,
                 Status = toReturnDomain.Status,
+                Reason = toReturnDomain.Reason,
             };
 
             var clients = await _clientRepository.GetAllAsync();

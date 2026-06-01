@@ -17,13 +17,13 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public int ClientId { get; set; }
 
-        //[Display(Name = "ID продажи")]
-        //[Required(ErrorMessage = "Поле должно быть заполнено")]
-        //public int SaleId { get; set; }
-
         [Display(Name = "ID экземпляра")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public int ExemplarId { get; set; }
+
+        [Display(Name = "Причина")]
+        [Required(ErrorMessage = "Поле должно быть заполнено")]
+        public string Reason { get; set; }
 
         public ReturnStatus Status { get; set; } = ReturnStatus.InProcess;
     }

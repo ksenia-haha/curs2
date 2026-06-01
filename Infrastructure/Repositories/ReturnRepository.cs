@@ -86,7 +86,8 @@ namespace Infrastructure.Repositories
                 .SetProperty(i => i.ExemplarId, item.ExemplarId)
                 .SetProperty(i => i.Status, item.Status)
                 .SetProperty(i => i.EmployeeId, item.EmployeeId)
-                .SetProperty(i => i.ClientId, item.ClientId));
+                .SetProperty(i => i.ClientId, item.ClientId)
+                .SetProperty(i => i.Reason, item.Reason));
                 //.SetProperty(i => i.Sale,item.Sale));
 
             //toReturn.EmployeeId = item.EmployeeId;

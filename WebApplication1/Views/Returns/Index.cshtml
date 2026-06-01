@@ -14,6 +14,7 @@
             <th>Клиент</th>
             <th>Сотрудник</th>
             <th>Экземпляр</th>
+            <th>Причина</th>
             <th>Статус</th>
             <th>Действия</th>
         </tr>
@@ -26,6 +27,7 @@
                 <td>@item.Client?.Name @item.Client?.Surname</td>
                 <td>@item.Employee?.Name @item.Employee?.Surname</td>
                 <td>@item.Exemplar?.EditionISBN</td>
+                <td>@item.Reason</td>
                 <td>
                 @if (item.Status == ReturnStatus.InProcess)
                 {
@@ -76,7 +78,7 @@
     .withUrl("/returnHub")
     .build();
 
-    connection.on("ReturnCreated", (id, clientName, employeeName, exemplarIsbn, status) => {
+    connection.on("ReturnCreated", (id, clientName, employeeName, exemplarIsbn, status, reason) => {
     const statusText = getStatusText(status);
     const newRow = `
     <tr id="returnRow_${id}">
@@ -84,6 +86,7 @@
     <td class="clientName">${clientName || ''}</td>
     <td class="employeeName">${employeeName || ''}</td>
     <td class="exemplarIsbn">${exemplarIsbn || ''}</td>
+    <td class="reason">${reason || ''}</td>
     <td class="status">${statusText}</td>
     <td>
     <a href="/Returns/Edit/${id}">Редактировать</a>
@@ -94,13 +97,14 @@
     document.querySelector('#returnsTable tbody').insertAdjacentHTML('afterbegin', newRow);
     });
 
-    connection.on("ReturnUpdated", (id, clientName, employeeName, exemplarIsbn, status) => {
+    connection.on("ReturnUpdated", (id, clientName, employeeName, exemplarIsbn, status, reason) => {
     const row = document.getElementById(`returnRow_${id}`);
     if (row) {
     const statusText = getStatusText(status);
     row.querySelector('.clientName').textContent = clientName || '';
     row.querySelector('.employeeName').textContent = employeeName || '';
     row.querySelector('.exemplarIsbn').textContent = exemplarIsbn || '';
+    row.querySelector('.reason').textContent = reason || '';
     row.querySelector('.status').textContent = statusText;
     }
     });
@@ -124,7 +128,8 @@
     cells[1].classList.add('clientName');    
     cells[2].classList.add('employeeName'); 
     cells[3].classList.add('exemplarIsbn'); 
-    cells[4].classList.add('status');       
+    cells[4].classList.add('reason');
+    cells[5].classList.add('status');       
     }
     }
 

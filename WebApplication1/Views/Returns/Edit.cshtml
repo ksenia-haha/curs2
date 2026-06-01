@@ -49,6 +49,16 @@
         <span asp-validation-for="SaleId"></span>
     </div> *@
 
+    <div class="form-input">
+        <label asp-for="Reason"></label>
+        <select asp-for="Reason">
+            <option value="Брак">Брак</option>
+            <option value="Повторная покупка">Повторная покупка</option>
+            <option value="Неактуально">Неактуально</option>
+        </select>
+        <span asp-validation-for="Reason"></span>
+    </div>
+
     <input type="submit" value="Отправить" />
 
 </form>
