@@ -52,10 +52,12 @@ namespace WebApplication1.Controllers
                 .OrderBy(c => c.Id == 5 ? 0 : 1) 
                 .ThenBy(c => c.Surname)
                 .Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = $"{c.Surname} | {c.Name} | {c.PhoneNumber}",
-            })
+                {
+                    Value = c.Id.ToString(),
+                    Text = $"{c.Surname} | {c.Name} | {c.PhoneNumber}",
+                    Selected = (c.Id == 5)
+                }
+            )
                 .ToList();
 
             var employeeList = employees.Select(e => new SelectListItem
