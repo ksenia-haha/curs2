@@ -8,11 +8,6 @@
 <h1>Добавление продажи</h1>
 
 <form method="post" asp-controller="Sales" asp-action="Create" id="saleForm" class="form-input-cont">
-    @* <div class="form-input">
-        <label asp-for="Id"></label>
-        <input asp-for="Id" />
-        <span asp-validation-for="Id"></span>
-    </div> *@
 
     @if (isAdmin)
     {
@@ -38,13 +33,6 @@
         <span asp-validation-for="ClientId"></span>
     </div>
 
-    @* <div class="form-input">
-        <label asp-for="Date"></label>
-        <input asp-for="Date" />
-        <span asp-validation-for="Date"></span>
-    </div> *@
-
-
     <h4>Товары</h4>
 
     <div class="form-group">
@@ -54,6 +42,7 @@
                 <option value="@ex.Value">@ex.Text</option>
             }
         </select>
+        <br />
     </div>
 
     <input type="submit" value="Оформить продажу" />
@@ -61,86 +50,78 @@
 </form> 
 
 <script>
-     function checkClient() {
-        let input = document.querySelector('[name="ClientId"]');
-        let value = input.value.trim();
-        let errorSpan = document.querySelector('[data-valmsg-for="ClientId"]');
-        
-        if (value === '') {
-            errorSpan.innerHTML = "Выберите клиента";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            input.style.border = "";
-            return true;
-        }
-    }
+function checkClient() {
+let input = document.querySelector('[name="ClientId"]');
+let value = input.value.trim();
+let errorSpan = document.querySelector('[data-valmsg-for="ClientId"]');
 
-    function checkEmployee() {
-        let input = document.querySelector('[name="EmployeeId"]');
-        let value = input.value.trim();
-        let errorSpan = document.querySelector('[data-valmsg-for="EmployeeId"]');
-        
-        if (value === '') {
-            errorSpan.innerHTML = "Выберите сотрудника";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            input.style.border = "";
-            return true;
-        }
-    }
-    
-    function checkDate() {
-        let input = document.querySelector('[name="Date"]');
-        let value = input.value.trim();
-        let errorSpan = document.querySelector('[data-valmsg-for="Date"]');
-        
-        if (value === '') {
-            errorSpan.innerHTML = "Заполните дату";
-            errorSpan.style.color = "red";
-            input.style.border = "2px solid red";
-            return false;
-        } else {
-            errorSpan.innerHTML = "";
-            input.style.border = "";
-            return true;
-        }
-    }
+if (value === '') {
+errorSpan.innerHTML = "Выберите клиента";
+errorSpan.style.color = "red";
+input.style.border = "2px solid red";
+return false;
+} else {
+errorSpan.innerHTML = "";
+input.style.border = "";
+return true;
+}
+}
 
-    // function checkExemplars() {
-    //    function checkExemplars() {
-    //     let select = document.querySelector('[name="selectedExemplarIds"]');
-    //     let selectedOptions = select.selectedOptions;
-    
-    //     if (selectedOptions.length === 0) {
-    //         errorSpan.innerHTML = "Выберите экземпляры";
-    //         errorSpan.style.color = "red";
-    //         input.style.border = "2px solid red";
-    //         return false;
-    //     }
-    //     return true;
-    // }
+function checkEmployee() {
+let input = document.querySelector('[name="EmployeeId"]');
+let value = input.value.trim();
+let errorSpan = document.querySelector('[data-valmsg-for="EmployeeId"]');
 
-    
-     let form = document.getElementById('saleForm');
-        form.addEventListener('submit', function(event) {
-        let isClientIdOk = checkClient();
-        let isEmployeeIdOk = checkEmployee();
-        // let isExemplarsOk = checkExemplars();
-        let isDateOk = checkDate();
-    
-        if (!isClientIdOk || !isEmployeeIdOk || !isDateOk) {
-            event.preventDefault();
-        }
-    });
+if (value === '') {
+errorSpan.innerHTML = "Выберите сотрудника";
+errorSpan.style.color = "red";
+input.style.border = "2px solid red";
+return false;
+} else {
+errorSpan.innerHTML = "";
+input.style.border = "";
+return true;
+}
+}
 
-     document.querySelector('[name="ClientId"]').addEventListener('input', checkClient);
-     document.querySelector('[name="EmployeeId"]').addEventListener('input', checkEmployee);
-     document.querySelector('[name="Date"]').addEventListener('input', checkDate);
+function checkProducts() {
+let select = document.querySelector('[name="selectedExemplarIds"]');
+let selectedOptions = Array.from(select.selectedOptions);
+let errorSpan = document.querySelector('[data-valmsg-for="selectedExemplarIds"]');
+
+if (selectedOptions.length === 0) {
+if (!errorSpan) {
+errorSpan = document.createElement('span');
+errorSpan.setAttribute('data-valmsg-for', 'selectedExemplarIds');
+errorSpan.setAttribute('data-valmsg-replace', 'true');
+select.parentNode.appendChild(errorSpan);
+}
+errorSpan.innerHTML = "Выберите хотя бы один товар";
+errorSpan.style.color = "red";
+select.style.border = "2px solid red";
+return false;
+} else {
+if (errorSpan) {
+errorSpan.innerHTML = "";
+}
+select.style.border = "";
+return true;
+}
+}
+
+let form = document.getElementById('saleForm');
+form.addEventListener('submit', function(event) {
+let isClientIdOk = checkClient();
+let isEmployeeIdOk = checkEmployee();
+let isProductsOk = checkProducts();
+
+if (!isClientIdOk || !isEmployeeIdOk || !isProductsOk) {
+event.preventDefault();
+}
+});
+
+document.querySelector('[name="ClientId"]').addEventListener('input', checkClient);
+document.querySelector('[name="EmployeeId"]').addEventListener('input', checkEmployee);
+document.querySelector('[name="selectedExemplarIds"]').addEventListener('change', checkProducts);
 
 </script>

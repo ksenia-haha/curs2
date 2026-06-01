@@ -1,8 +1,8 @@
 ﻿@model WebApplication1.Models.Log
 
-<h2>Авторизация</h2>
+<h2 style="text-align:center;">Авторизация</h2>
 
-<form asp-action="Login" asp-controller="Log" method="post"> 
+<form asp-action="Login" asp-controller="Log" method="post" class="auth-form">
     <div>
         <label asp-for="Login"></label>
         <input asp-for="Login" style="margin-left: 10px;" />

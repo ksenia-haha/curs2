@@ -183,3 +183,11 @@ tr:hover {
     display: block;
     margin: 20px auto 0 auto;
 }
+
+.auth-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}

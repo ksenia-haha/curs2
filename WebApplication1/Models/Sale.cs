@@ -26,6 +26,9 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public double? Sum { get; set; }
 
+        [Required(ErrorMessage = "Выберите хотя бы один товар")]
+        public List<int> SelectedExemplarIds { get; set; }
+
         public List<SaleAndExemplar> SaleAndExemplars { get; set; }
         public List<Return> Returns { get; set; }
     }
