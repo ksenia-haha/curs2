@@ -160,6 +160,8 @@ namespace WebApplication1.Controllers
             if (string.IsNullOrWhiteSpace(outputPath) || !outputPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 return false;
 
+            var totalSalesAmount = data.Sum(s => s.Sum);
+
             var builder = new StringBuilder();
             builder.AppendLine("<!DOCTYPE html>");
             builder.AppendLine("<html>");
@@ -206,6 +208,7 @@ namespace WebApplication1.Controllers
             }
             builder.AppendLine("</tbody>");
             builder.AppendLine("</table>");
+            builder.AppendLine($"<p><strong>Итого: {totalSalesAmount:F2} руб.</strong></p>");
             builder.AppendLine("</body>");
             builder.AppendLine("</html>");
 
