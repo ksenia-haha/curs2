@@ -2,12 +2,29 @@
 @{
     ViewData["Title"] = "Просмотр продаж";
     var isAdmin = Context.Session.GetInt32("UserLevel") == 2;
+    var startDate = Context.Request.Query["startDate"].ToString();
+    var endDate = Context.Request.Query["endDate"].ToString();
 }
 
 
 <h1>Продажи</h1>
 
+<form method="get" asp-action="Report" asp-controller="Sales" id="reportForm">
+    <div style="display: flex; margin: 0 15%;justify-content: space-around;">
+        <div>
+        <label>С:</label>
+            <input type="date" name="startDate" value="@startDate" class="date-input" />
+        </div>
+
+        <div>
+        <label>По:</label>
+            <input type="date" name="endDate" value="@endDate" class="date-input" />
+        </div>
+    </div>
+</form>
+
 <table class="table" id="salesTable">
+
     <thead>
         <tr>
             <th>ID</th>
@@ -40,9 +57,9 @@
     <a asp-controller="Sales" asp-action="Create">Добавить продажу</a>
 </button>
 
-<button style="width: 200px; margin-left: 10%; margin-top: 20px;">
-    <a asp-controller="Sales" asp-action="Report">Скачать отчёт</a>
-</button>
+    <button type="submit" form="reportForm" style="width: 200px; margin-left: 10%; margin-top: 20px;">
+        Скачать отчёт
+    </button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>

@@ -155,7 +155,42 @@ namespace WebApplication1.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<bool> ConvertData(List<Domain.Sale> data, string outputPath)
+        [HttpGet]
+        public async Task<IActionResult> Report(DateTime? startDate, DateTime? endDate)
+        {
+            var allSales = await _repository.GetAllAsync();
+            var salesList = allSales.ToList();
+
+            if (startDate.HasValue)
+            {
+                salesList = salesList.Where(s => s.Date >= DateOnly.FromDateTime(startDate.Value)).ToList();
+            }
+
+            if (endDate.HasValue)
+            {
+                salesList = salesList.Where(s => s.Date <= DateOnly.FromDateTime(endDate.Value)).ToList();
+            }
+
+            if (!salesList.Any())
+            {
+                return BadRequest("Нет продаж за выбранный период");
+            }
+
+            string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", $"sales_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+
+            var result = await ConvertDataWithFilter(salesList, outputPath, startDate, endDate);
+
+            if (result)
+            {
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPath);
+                return File(fileBytes, "text/html", Path.GetFileName(outputPath));
+            }
+
+            return BadRequest("Ошибка при создании отчёта");
+        }
+
+        private async Task<bool> ConvertDataWithFilter(List<Domain.Sale> data, string outputPath, DateTime? startDate, DateTime? endDate)
         {
             if (!data.Any()) return false;
             if (string.IsNullOrWhiteSpace(outputPath) || !outputPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
@@ -179,8 +214,22 @@ namespace WebApplication1.Controllers
             builder.AppendLine("<body>");
             builder.AppendLine("<h1>Отчёт по продажам</h1>");
             builder.AppendLine($"<p>Дата создания: {DateTime.Now:dd.MM.yyyy HH:mm:ss}</p>");
-            builder.AppendLine("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">");
 
+            if (startDate.HasValue || endDate.HasValue)
+            {
+                builder.Append("<p><strong>Период:</strong>");
+                if (startDate.HasValue)
+                    builder.Append($" с {startDate.Value:dd.MM.yyyy}");
+                if (endDate.HasValue)
+                    builder.Append($" по {endDate.Value:dd.MM.yyyy}");
+                builder.AppendLine("</p>");
+            }
+            else
+            {
+                builder.AppendLine("<p><strong>Период:</strong> за всё время</p>");
+            }
+
+            builder.AppendLine("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">");
             builder.AppendLine("<thead>");
             builder.AppendLine("<tr>");
             builder.AppendLine("<th>ID</th>");
@@ -190,8 +239,8 @@ namespace WebApplication1.Controllers
             builder.AppendLine("<th>Сумма</th>");
             builder.AppendLine("</tr>");
             builder.AppendLine("</thead>");
-
             builder.AppendLine("<tbody>");
+
             foreach (var item in data)
             {
                 builder.AppendLine("<tr>");
@@ -207,6 +256,7 @@ namespace WebApplication1.Controllers
                 builder.AppendLine($"<td style=\"text-align: right;\">{item.Sum:F2} руб.</td>");
                 builder.AppendLine("</tr>");
             }
+
             builder.AppendLine("</tbody>");
             builder.AppendLine("</table>");
             builder.AppendLine($"<p><strong>Итого: {totalSalesAmount:F2} руб.</strong></p>");
@@ -215,21 +265,6 @@ namespace WebApplication1.Controllers
 
             await System.IO.File.WriteAllTextAsync(outputPath, builder.ToString(), Encoding.UTF8);
             return true;
-        }
-
-        public async Task<IActionResult> Report()
-        {
-            var sales = await _repository.GetAllAsync();
-            string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", $"sales_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-            var result = await ConvertData((List<Domain.Sale>)sales, outputPath);
-            if (result)
-            {
-                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(outputPath);
-                return File(fileBytes, "text/html", Path.GetFileName(outputPath));
-            }
-
-            return BadRequest("Ошибка при создании отчёта");
         }
 
         [HttpPost]
