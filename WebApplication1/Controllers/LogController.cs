@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Domain;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
@@ -19,7 +20,7 @@ namespace WebApplication1.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("Index");
         }
 
         [HttpGet]
@@ -38,26 +39,21 @@ namespace WebApplication1.Controllers
                 Password = model.Password,
             };
 
-            var employeeToLogin = await _repository.Login(employeeToCheck);
-
-            if (employeeToLogin != null)
+            try
             {
+                var employeeToLogin = await _repository.Login(employeeToCheck);
+
                 HttpContext.Session.SetString("IsLoggedIn", "true");
                 HttpContext.Session.SetString("EmployeeId", employeeToLogin.Id.ToString());
                 HttpContext.Session.SetString("UserName", $"{employeeToLogin.Name} {employeeToLogin.Surname}");
                 HttpContext.Session.SetInt32("UserLevel", employeeToLogin.Level);
                 return RedirectToAction("Index", "Home");
             }
-
-            //заглушка
-            //if (model.Login == "admin" && model.Password == "123")
-            //{
-            //    var employee = await _repository.Login(employeeToLogin);
-
-            //    return RedirectToAction("Index", "Home"); 
-            //}
-
-            return View(model);
+            catch (EmployeeException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View("Index", model);
+            }
         }
 
 

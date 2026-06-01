@@ -116,7 +116,7 @@ namespace Infrastructure.Repositories
                 throw new EmployeeException("Логин не указан");
 
             var employee = await _context.Employees.
-                FirstOrDefaultAsync(e => e.Login == item.Login && e.Password == e.Password);
+                FirstOrDefaultAsync(e => e.Login == item.Login && e.Password == item.Password);
 
             if (employee == null)
                 throw new EmployeeException($"Неверный логин или пароль");

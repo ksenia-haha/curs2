@@ -6,13 +6,16 @@
     <div>
         <label asp-for="Login"></label>
         <input asp-for="Login" style="margin-left: 10px;" />
+        <br />
         <span asp-validation-for="Login"></span>
     </div>
     <div>
         <label asp-for="Password"></label>
-        <input asp-for="Password" type="password"  style="margin-left: 2px;"/>
+        <input asp-for="Password" type="password" style="margin-left: 2px;" />
+        <br />
         <span asp-validation-for="Password"></span>
     </div>
+    <div id="serverError" style="color: red; margin-top: 5px; display: none;"></div>
     <button type="submit">Войти</button>
 </form>
 
@@ -20,7 +23,8 @@
     const form = document.querySelector('form');
     const passwordInput = document.querySelector('[name="Password"]');
     const loginInput = document.querySelector('[name="Login"]');
-    
+    const serverErrorDiv = document.getElementById('serverError');
+
     let passwordErrorSpan = document.querySelector('[data-valmsg-for="Password"]');
     if (!passwordErrorSpan) {
         passwordErrorSpan = document.createElement('span');
@@ -30,15 +34,9 @@
 
     function checkPassword() {
         const password = passwordInput.value;
-        
+
         if (password === '') {
             passwordErrorSpan.innerHTML = "Введите пароль";
-            passwordErrorSpan.style.color = "red";
-            passwordInput.style.border = "2px solid red";
-            passwordInput.style.backgroundColor = "#ffe6e6";
-            return false;
-        } else if (password.length < 3) {
-            passwordErrorSpan.innerHTML = "Неверный пароль";
             passwordErrorSpan.style.color = "red";
             passwordInput.style.border = "2px solid red";
             passwordInput.style.backgroundColor = "#ffe6e6";
@@ -54,13 +52,13 @@
     function checkLogin() {
         const login = loginInput.value;
         let loginErrorSpan = document.querySelector('[data-valmsg-for="Login"]');
-        
+
         if (!loginErrorSpan) {
             loginErrorSpan = document.createElement('span');
             loginErrorSpan.setAttribute('data-valmsg-for', 'Login');
             loginInput.parentNode.appendChild(loginErrorSpan);
         }
-        
+
         if (login === '') {
             loginErrorSpan.innerHTML = "Введите логин";
             loginErrorSpan.style.color = "red";
@@ -75,12 +73,21 @@
         }
     }
 
+    @if (ViewData.ModelState.ContainsKey("") && ViewData.ModelState[""].Errors.Any())
+    {
+            <text>
+                serverErrorDiv.innerText = '@Html.Raw(ViewData.ModelState[""].Errors.First().ErrorMessage)';
+                serverErrorDiv.style.display = "block";
+            </text>
+    }
+
     form.addEventListener('submit', function(event) {
         const isLoginOk = checkLogin();
         const isPasswordOk = checkPassword();
-        
+
         if (!isLoginOk || !isPasswordOk) {
-            event.preventDefault(); 
+            event.preventDefault();
+            serverErrorDiv.style.display = "none";
         }
     });
 
@@ -89,9 +96,10 @@
             passwordErrorSpan.innerHTML = "";
             passwordInput.style.border = "";
             passwordInput.style.backgroundColor = "";
+            serverErrorDiv.style.display = "none";
         }
     });
-    
+
     loginInput.addEventListener('input', function() {
         let loginErrorSpan = document.querySelector('[data-valmsg-for="Login"]');
         if (loginInput.value !== '') {
@@ -100,6 +108,7 @@
             }
             loginInput.style.border = "";
             loginInput.style.backgroundColor = "";
+            serverErrorDiv.style.display = "none";
         }
     });
 </script>
