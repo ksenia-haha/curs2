@@ -78,9 +78,6 @@ namespace Infrastructure.Repositories
             var toReturn = await _context.Returns.FirstOrDefaultAsync(r => r.Id == item.Id)
                 ?? throw new ReturnException("Такого возврата нет в БД");
 
-            // var exemplar = await _context.Exemplars
-            //.FirstOrDefaultAsync(e => e.Id == toReturn.ExemplarId);
-
             await _context.Returns.Where(e => e.Id == item.Id)
                 .ExecuteUpdateAsync(s => s.SetProperty(i => i.ClientId, item.ClientId)
                 .SetProperty(i => i.ExemplarId, item.ExemplarId)
@@ -88,28 +85,17 @@ namespace Infrastructure.Repositories
                 .SetProperty(i => i.EmployeeId, item.EmployeeId)
                 .SetProperty(i => i.ClientId, item.ClientId)
                 .SetProperty(i => i.Reason, item.Reason));
-                //.SetProperty(i => i.Sale,item.Sale));
 
-            //toReturn.EmployeeId = item.EmployeeId;
-            //toReturn.ClientId = item.ClientId;
-            ////toReturn.SaleId = item.SaleId;
-            //toReturn.ExemplarId = item.ExemplarId;
-            //toReturn.Status = item.Status;
-
-            //toReturn.Employee = item.Employee;
-            //toReturn.Client = item.Client;
-            //toReturn.Sale = item.Sale;
-            //toReturn.Exemplar = item.Exemplar;
             var exemplar = await _context.Exemplars
-                .FirstOrDefaultAsync(e => e.Id == toReturn.ExemplarId);
-            if (exemplar.Status == Exemplar.ExemplarStatus.Sold && toReturn.Status == Return.ReturnStatus.Yes)
-            {
+      .FirstOrDefaultAsync(e => e.Id == item.ExemplarId);
 
+            if (exemplar != null && exemplar.Status == Exemplar.ExemplarStatus.Sold && item.Status == Return.ReturnStatus.Yes)
+            {
                 exemplar.Status = Exemplar.ExemplarStatus.InStock;
                 await _context.SaveChangesAsync();
             }
 
-    }
+        }
 
         public Task GetByIdAsync(int id)
         {
