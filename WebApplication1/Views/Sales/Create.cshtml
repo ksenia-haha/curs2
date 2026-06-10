@@ -22,7 +22,7 @@
     else
     {
         <input type="hidden" name="EmployeeId" value="@Context.Session.GetInt32("UserId")" />
-        <p>Продажу оформляет: @Context.Session.GetString("UserSurname") @Context.Session.GetString("UserName") </p>
+        <p>Продажу оформляет: @Context.Session.GetString("UserName") </p>
     }
 
     <div class="form-input">

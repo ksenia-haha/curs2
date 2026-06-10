@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task GetByIdAsync(int id);
         Task<Client> GetByPhone(Client item);
+        Task<bool> PhoneExistsAsync(string phone);
     }
 }

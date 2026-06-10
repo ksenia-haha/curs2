@@ -1,9 +1,10 @@
-﻿using System.Text;
-using Domain;
+﻿using Domain;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Text;
 using WebApplication1.Data;
 using WebApplication1.Hubs;
 using WebApplication1.Hubs;
@@ -34,21 +35,31 @@ namespace WebApplication1.Controllers
         }
          
 
+
         [HttpPost]
         public async Task<IActionResult> Create(Client client)
         {
-            var domainClient = MapClient(client);
-            await _repository.CreateAsync(domainClient);
+                try
+                {
+                    var domainClient = MapClient(client);
+                    await _repository.CreateAsync(domainClient);
 
-            await _hubContext.Clients.All.SendAsync("ClientCreated",
-                    domainClient.Id,
-                    domainClient.Surname,
-                    domainClient.Name,
-                    domainClient.Patronymic,
-                    domainClient.PhoneNumber);
+                    await _hubContext.Clients.All.SendAsync("ClientCreated",
+                            domainClient.Id,
+                            domainClient.Surname,
+                            domainClient.Name,
+                            domainClient.Patronymic,
+                            domainClient.PhoneNumber);
 
-            return RedirectToAction(nameof(Index));
-        }
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ClientException ex) 
+                {
+                    ModelState.AddModelError("PhoneNumber", ex.Message);
+                    return View(client); 
+                }
+            }
+       
         private Domain.Client MapClient(WebApplication1.Models.Client client)
         {
             var c = new Domain.Client();

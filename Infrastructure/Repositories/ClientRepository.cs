@@ -41,6 +41,11 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> PhoneExistsAsync(string phoneNumber)
+        {
+            return await _context.Clients.AnyAsync(c => c.PhoneNumber == phoneNumber);
+        }
+
         private void ValidateClient(Client item)
         {
             if (item == null)

@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
                 var employeeToLogin = await _repository.Login(employeeToCheck);
 
                 HttpContext.Session.SetString("IsLoggedIn", "true");
-                HttpContext.Session.SetString("EmployeeId", employeeToLogin.Id.ToString());
+                HttpContext.Session.SetInt32("UserId", employeeToLogin.Id);
                 HttpContext.Session.SetString("UserName", $"{employeeToLogin.Name} {employeeToLogin.Surname}");
                 HttpContext.Session.SetInt32("UserLevel", employeeToLogin.Level);
                 return RedirectToAction("Index", "Home");

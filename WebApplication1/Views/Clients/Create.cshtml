@@ -29,7 +29,8 @@
     <div class="form-input">
         <label asp-for="PhoneNumber"></label>
         <input asp-for="PhoneNumber" />
-        <span asp-validation-for="PhoneNumber"></span>
+        @* <span asp-validation-for="PhoneNumber"></span> *@
+        <span class="text-danger">@Html.ValidationMessage("PhoneNumber")</span>
     </div>
 
     <input type="submit" value="Отправить" />

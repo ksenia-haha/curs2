@@ -195,3 +195,7 @@ tr:hover {
 .date-input {
     width: 300px;
 }
+
+.text-danger {
+    color: red;
+}
