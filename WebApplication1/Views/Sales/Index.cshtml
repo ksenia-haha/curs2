@@ -9,19 +9,23 @@
 
 <h1>Продажи</h1>
 
-<form method="get" asp-action="Report" asp-controller="Sales" id="reportForm">
-    <div style="display: flex; margin: 0 15%;justify-content: space-around;">
-        <div>
-        <label>С:</label>
-            <input type="date" name="startDate" value="@startDate" class="date-input" />
-        </div>
+@if (isAdmin)
+{
+    <form method="get" asp-action="Report" asp-controller="Sales" id="reportForm">
+        <div style="display: flex; margin: 0 15%;justify-content: space-around;">
+            <div>
+                <label>С:</label>
+                <input type="date" name="startDate" value="@startDate" class="date-input" />
+            </div>
 
-        <div>
-        <label>По:</label>
-            <input type="date" name="endDate" value="@endDate" class="date-input" />
+            <div>
+                <label>По:</label>
+                <input type="date" name="endDate" value="@endDate" class="date-input" />
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+}
+
 
 <table class="table" id="salesTable">
 
@@ -57,9 +61,13 @@
     <a asp-controller="Sales" asp-action="Create">Добавить продажу</a>
 </button>
 
-    <button type="submit" form="reportForm" style="width: 200px; margin-left: 10%; margin-top: 20px;">
-        Скачать отчёт
-    </button>
+    @if (isAdmin)
+    {
+        <button type="submit" form="reportForm" style="width: 200px; margin-left: 10%; margin-top: 20px;">
+            Скачать отчёт
+        </button>
+    }
+    
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>

@@ -81,6 +81,13 @@
             return false;
         }
 
+        if (isbn.length > 17) {
+            errorSpan.innerHTML = "ISBN не может быть длиннее 17 символов";
+            errorSpan.style.color = "red";
+            isbnInput.style.border = "2px solid red";
+            return false;
+        }
+
         let onlyDigitsAndDashes = /^[0-9-]+$/;
         if (!onlyDigitsAndDashes.test(isbn)) {
             errorSpan.innerHTML = "ISBN может содержать только цифры и дефисы";

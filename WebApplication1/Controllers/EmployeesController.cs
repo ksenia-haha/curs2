@@ -56,7 +56,6 @@ namespace WebApplication1.Controllers
                     employee.Patronymic,
                     employee.Position,
                     employee.Login,
-                    employee.Password,
                     employee.Level);
 
             return RedirectToAction(nameof(Index));
@@ -69,7 +68,6 @@ namespace WebApplication1.Controllers
             e.Name = employee.Name;
             e.Patronymic = employee.Patronymic;
             e.Position = employee.Position;
-            e.Password = employee.Password;
             e.Login = employee.Login;
             e.Level = employee.Level;
 

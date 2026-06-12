@@ -45,9 +45,14 @@
     <a asp-controller="Clients" asp-action="Create">Добавить клиента</a>
 </button>
 
-<button style="width: 200px; margin-left: 10%; margin-top: 20px;">
-    <a asp-controller="Clients" asp-action="Report">Скачать отчёт</a>
-</button>
+
+    @if (isAdmin)
+    {
+        <button style="width: 200px; margin-left: 10%; margin-top: 20px;">
+            <a asp-controller="Clients" asp-action="Report">Скачать отчёт</a>
+        </button>
+    }
+    
 </div>
 
 

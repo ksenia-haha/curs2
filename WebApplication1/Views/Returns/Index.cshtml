@@ -16,7 +16,10 @@
             <th>Экземпляр</th>
             <th>Причина</th>
             <th>Статус</th>
-            <th>Действия</th>
+            @if(isAdmin)
+            {
+                <th>Действия</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -42,15 +45,14 @@
                     <span>Отказано</span>
                 }
             </td>
-                @* <td>@item.Status</td> *@
-                <td>
-                    @* <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | *@
+                
                     @if(isAdmin){
+                    <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">Редактировать |</a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">Удалить</a>
+                    </td>
                     }
                     
-                </td>
             </tr>
         }
     </tbody>

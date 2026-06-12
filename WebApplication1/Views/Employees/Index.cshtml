@@ -59,7 +59,7 @@
     .withUrl("/employeeHub")
     .build();
 
-    connection.on("EmployeeCreated", (id, surname, name, patronymic, position, login, password, level) => {
+    connection.on("EmployeeCreated", (id, surname, name, patronymic, position, login, level) => {
     const newRow = `
     <tr id="employeeRow_${id}">
     <td>${id}</td>
@@ -68,7 +68,6 @@
     <td class="patronymic">${patronymic || ''}</td>
     <td class="position">${position || ''}</td>
     <td class="login">${login}</td>
-    <td class="password">${password}</td>
     <td class="level">${level}</td>
     <td>
     <a href="/Employees/Edit/${id}">Редактировать</a>
@@ -80,7 +79,7 @@
     document.querySelector('#employeesTable tbody').insertAdjacentHTML('afterbegin', newRow);
     });
 
-    connection.on("EmployeeUpdated", (id, surname, name, patronymic, position, login, password, level) => {
+    connection.on("EmployeeUpdated", (id, surname, name, patronymic, position, login, level) => {
     const row = document.getElementById(`employeeRow_${id}`);
     if (row) {
     row.querySelector('.surname').textContent = surname;
@@ -88,7 +87,6 @@
     row.querySelector('.patronymic').textContent = patronymic || '';
     row.querySelector('.position').textContent = position;
     row.querySelector('.login').textContent = login;
-    row.querySelector('.password').textContent = password;
     row.querySelector('.level').textContent = level;
     }
     });
@@ -114,8 +112,7 @@
     cells[3].classList.add('patronymic');
     cells[4].classList.add('position');
     cells[5].classList.add('login');
-    cells[6].classList.add('password');
-    cells[7].classList.add('level');
+    cells[6].classList.add('level');
     }
     }
     });
