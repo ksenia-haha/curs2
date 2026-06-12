@@ -46,7 +46,6 @@
 
     <div class="form-input">
         <label asp-for="Level"></label>
-        @* <input asp-for="Level" /> *@
         <select asp-for="Level" asp-items="ViewBag.AccessLevels">
             <option value=""></option>
         </select>
@@ -157,6 +156,7 @@
         let value = input.value.trim();
         let hasDigits = /\d/;
         let errorSpan = document.querySelector('[data-valmsg-for="Position"]');
+        const onlyLettersAndHyphen =  /^[а-яА-ЯёЁ\s-]+$/;
 
         if (value === '') {
             errorSpan.innerHTML = "Введите должность";
@@ -168,6 +168,11 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
+        } else if (!onlyLettersAndHyphen.test(value)) {
+          errorSpan.innerHTML = "Должность может содержать только буквы, дефис и пробелы";
+          errorSpan.style.color = "red";
+          input.style.border = "2px solid red";
+          return false;
         } else {
             errorSpan.innerHTML = "";
             input.style.border = "";
@@ -196,6 +201,9 @@
         let input = document.querySelector('[name="Login"]');
         let value = input.value.trim();
         let errorSpan = document.querySelector('[data-valmsg-for="Login"]');
+        let letters = value.match(/[a-zA-Zа-яА-ЯёЁ]/g);
+        let letterCount = letters ? letters.length : 0;
+        const onlyLettersAndDigits = /^[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
         if (value === '') {
             errorSpan.innerHTML = "Введите логин";
@@ -207,7 +215,17 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
-        } else {
+        } else if (letterCount < 4) {
+        errorSpan.innerHTML = "Логин должен содержать минимум 4 буквы";
+        errorSpan.style.color = "red";
+        input.style.border = "2px solid red";
+        return false;
+        } else if (!onlyLettersAndDigits.test(value)) {
+        errorSpan.innerHTML = "Логин может содержать только буквы и цифры";
+        errorSpan.style.color = "red";
+        input.style.border = "2px solid red";
+        return false;
+    }  else {
             errorSpan.innerHTML = "";
             input.style.border = "";
             return true;
@@ -218,6 +236,8 @@
         let input = document.querySelector('[name="Password"]');
         let value = input.value.trim();
         let errorSpan = document.querySelector('[data-valmsg-for="Password"]');
+        let letters = value.match(/[a-zA-Zа-яА-ЯёЁ]/g);
+        let letterCount = letters ? letters.length : 0;
 
         if (value === '') {
             errorSpan.innerHTML = "Введите пароль";
@@ -229,6 +249,11 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
+        } else if (letterCount < 4) {
+        errorSpan.innerHTML = "Пароль должен содержать минимум 4 буквы";
+        errorSpan.style.color = "red";
+        input.style.border = "2px solid red";
+        return false;
         } else {
             errorSpan.innerHTML = "";
             input.style.border = "";

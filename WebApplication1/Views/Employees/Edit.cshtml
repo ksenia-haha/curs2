@@ -55,6 +55,7 @@
         let surnameInput = document.querySelector('[name="Surname"]');
         let surname = surnameInput.value.trim();
         let hasDigits = /\d/;
+        const onlyLettersAndHyphen = /^[а-яА-ЯёЁ-]+$/;
 
         let errorSpan = document.querySelector('[data-valmsg-for="Surname"]');
 
@@ -68,11 +69,11 @@
             errorSpan.style.color = "red";
             surnameInput.style.border = "2px solid red";
             return false;
-        } else if (hasDigits.test(surname)) {
-            errorSpan.innerHTML = "Фамилия не может содержать цифры";
-            errorSpan.style.color = "red";
-            surnameInput.style.border = "2px solid red";
-            return false;
+        } else if (!onlyLettersAndHyphen.test(surname)) {
+          errorSpan.innerHTML = "Фамилия может содержать только буквы и дефис";
+          errorSpan.style.color = "red";
+          surnameInput.style.border = "2px solid red";
+          return false;
         } else {
             errorSpan.innerHTML = "";
             surnameInput.style.border = "";
@@ -85,6 +86,7 @@
         let nameInput = document.querySelector('[name="Name"]');
         let name = nameInput.value.trim();
         let hasDigits = /\d/;
+        const onlyLettersAndHyphen = /^[а-яА-ЯёЁ-]+$/;
 
         let errorSpan = document.querySelector('[data-valmsg-for="Name"]');
 
@@ -98,11 +100,11 @@
             errorSpan.style.color = "red";
             nameInput.style.border = "2px solid red";
             return false;
-        } else if (hasDigits.test(name)) {
-            errorSpan.innerHTML = "Имя не может содержать цифры";
-            errorSpan.style.color = "red";
-            nameInput.style.border = "2px solid red";
-            return false;
+        } else if (!onlyLettersAndHyphen.test(name)) {
+          errorSpan.innerHTML = "Имя может содержать только буквы и дефис";
+          errorSpan.style.color = "red";
+          nameInput.style.border = "2px solid red";
+          return false;
         } else {
             errorSpan.innerHTML = "";
             nameInput.style.border = "";
@@ -115,6 +117,7 @@
         let patronymicInput = document.querySelector('[name="Patronymic"]');
         let patronymic = patronymicInput.value.trim();
         let hasDigits = /\d/;
+        const onlyLettersAndHyphen = /^[а-яА-ЯёЁ-]+$/;
 
         let errorSpan = document.querySelector('[data-valmsg-for="Patronymic"]');
 
@@ -124,11 +127,11 @@
             return true;
         }
 
-        if (hasDigits.test(patronymic)) {
-            errorSpan.innerHTML = "Отчество не может содержать цифры";
-            errorSpan.style.color = "red";
-            patronymicInput.style.border = "2px solid red";
-            return false;
+        if (!onlyLettersAndHyphen.test(patronymic)) {
+          errorSpan.innerHTML = "Отчество может содержать только буквы и дефис";
+          errorSpan.style.color = "red";
+          patronymicInput.style.border = "2px solid red";
+          return false;
         } else {
             errorSpan.innerHTML = "";
             patronymicInput.style.border = "";
@@ -140,6 +143,7 @@
         let input = document.querySelector('[name="Position"]');
         let value = input.value.trim();
         let hasDigits = /\d/;
+        const onlyLettersAndHyphen =  /^[а-яА-ЯёЁ\s-]+$/;
         let errorSpan = document.querySelector('[data-valmsg-for="Position"]');
 
         if (value === '') {
@@ -152,6 +156,11 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
+        } else if (!onlyLettersAndHyphen.test(value)) {
+          errorSpan.innerHTML = "Должность может содержать только буквы, дефис и пробелы";
+          errorSpan.style.color = "red";
+          input.style.border = "2px solid red";
+          return false;
         } else {
             errorSpan.innerHTML = "";
             input.style.border = "";
@@ -180,6 +189,9 @@
         let input = document.querySelector('[name="Login"]');
         let value = input.value.trim();
         let errorSpan = document.querySelector('[data-valmsg-for="Login"]');
+        let letters = value.match(/[a-zA-Zа-яА-ЯёЁ]/g);
+        let letterCount = letters ? letters.length : 0;
+        const onlyLettersAndDigits = /^[a-zA-Zа-яА-ЯёЁ0-9]+$/;
         
         if (value === '') {
             errorSpan.innerHTML = "Введите логин";
@@ -191,7 +203,17 @@
             errorSpan.style.color = "red";
             input.style.border = "2px solid red";
             return false;
-        } else {
+        } else if (letterCount < 4) {
+        errorSpan.innerHTML = "Логин должен содержать минимум 4 буквы";
+        errorSpan.style.color = "red";
+        input.style.border = "2px solid red";
+        return false;
+        } else if (!onlyLettersAndDigits.test(value)) {
+        errorSpan.innerHTML = "Логин может содержать только буквы и цифры";
+        errorSpan.style.color = "red";
+        input.style.border = "2px solid red";
+        return false;
+    } else {
             errorSpan.innerHTML = "";
             input.style.border = "";
             return true;
