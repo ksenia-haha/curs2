@@ -93,7 +93,7 @@
         } else if (!onlyLettersAndHyphen.test(name)) {
           errorSpan.innerHTML = "Имя может содержать только буквы и дефис";
           errorSpan.style.color = "red";
-          surnameInput.style.border = "2px solid red";
+          nameInput.style.border = "2px solid red";
           return false;
         } else {
             errorSpan.innerHTML = "";
@@ -113,7 +113,7 @@
         if (!onlyLettersAndHyphen.test(patronymic)) {
           errorSpan.innerHTML = "Отчество может содержать только буквы и дефис";
           errorSpan.style.color = "red";
-          surnameInput.style.border = "2px solid red";
+          patronymicInput.style.border = "2px solid red";
           return false;
         } else {
             errorSpan.innerHTML = "";
