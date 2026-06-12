@@ -44,9 +44,6 @@ namespace Infrastructure.Repositories
             if (string.IsNullOrWhiteSpace(item.Surname))
                 throw new EmployeeException("Фамилия не может быть пустой");
 
-            if (string.IsNullOrWhiteSpace(item.Patronymic))
-                throw new EmployeeException("Отчество не может быть пустым");
-
             if (string.IsNullOrWhiteSpace(item.Position))
                 throw new EmployeeException("Позиция не может быть пустой");
 
