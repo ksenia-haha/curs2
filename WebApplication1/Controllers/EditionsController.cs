@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -34,17 +35,26 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Models.Edition edition)
         {
-            await _repository.CreateAsync(MapEdition(edition));
+            try
+            {
+                await _repository.CreateAsync(MapEdition(edition));
 
-            await _hubContext.Clients.All.SendAsync("EditionCreated",
-                    edition.ISBN,
-                    edition.Name,
-                    edition.Author,
-                    edition.Genre,
-                    edition.Publisher,
-                    edition.Year);
+                await _hubContext.Clients.All.SendAsync("EditionCreated",
+                        edition.ISBN,
+                        edition.Name,
+                        edition.Author,
+                        edition.Genre,
+                        edition.Publisher,
+                        edition.Year);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+
+            catch (EditionException ex)
+            {
+                ModelState.AddModelError("ISBN", ex.Message);
+                return View(edition);
+            }
         }
         private Domain.Edition MapEdition(WebApplication1.Models.Edition edition)
         {
