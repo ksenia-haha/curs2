@@ -42,7 +42,7 @@ namespace WebApplication1.Controllers
         {
             var clients = await _clientRepository.GetAllAsync();
             var employees = await _employeeRepository.GetAllAsync();
-            var exemplars = await _exemplarRepository.GetAllAsync();
+            var exemplars = await _exemplarRepository.GetSoldExemplarsAsync();
 
             var clientList = clients.Select(c => new SelectListItem
             {

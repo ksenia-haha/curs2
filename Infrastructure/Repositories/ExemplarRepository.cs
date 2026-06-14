@@ -116,8 +116,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // Эти два новые
-
         public async Task<IEnumerable<Exemplar>> GetAvailableExemplarsAsync()
         {
             return await _context.Exemplars
@@ -133,6 +131,15 @@ namespace Infrastructure.Repositories
             exemplar.Status = ExemplarStatus.Sold;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Exemplar>> GetSoldExemplarsAsync()
+        {
+            return await _context.Exemplars
+                .AsNoTracking()
+                .Include(e => e.Edition)
+                .Where(e => e.Status == ExemplarStatus.Sold)
+                .ToListAsync();
         }
 
     }
